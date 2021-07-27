@@ -171,6 +171,9 @@ class Parser:
                                      (LESSTHAN, GREATERTHAN))
 
     def assignment_expr(self):
+        """
+        IDENTIFIER ASSIGN expr
+        """
         token = self.variable()
         op = self.current_token
         self.eat(ASSIGN)

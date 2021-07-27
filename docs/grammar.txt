@@ -1,0 +1,19 @@
+program ::= expr (NEWLINE expr)*
+expr ::= assignment | logical_expr
+assignment ::= IDENTIFIER ASSIGN expr
+logical_expr ::= comparative_expr ((AND|OR) comparative_expr)*
+
+comparative_expr ::= NOT comparative_expr
+                 ::= arithmetic_expr ((EE | LT | GT | LTE | GTE) arithmetic_expr)*
+
+arithmetic_expr ::= term (( PLUS | MINUS ) term)*
+
+term ::= factor (( MUL | DIV | IDIV ) factor )*
+
+factor ::= (PLUS | MINUS) factor | atom
+
+atom ::= INT|REF|DIEROLL|ID|STRING
+     ::= LPAREN expr RPAREN
+     ::= conditional_expr
+
+conditional_expr ::= IF expr THEN expr (ELIF expr THEN expr)* (ELSE expr)?
