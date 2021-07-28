@@ -81,3 +81,14 @@ def test_assignment_reference():
     res = interpret("Foo: 2\n$Foo + 5")
     assert res[1][0] == 2
     assert res[1][1] == 7
+
+
+def test_builtin_function_max():
+    res = interpret("max(2, 4)")
+    assert res[1][0] == 4
+
+    res = interpret("max(3, 1)")
+    assert res[1][0] == 3
+
+    res = interpret("max(2, 4, 3, 5)")
+    assert res[1][0] == 5

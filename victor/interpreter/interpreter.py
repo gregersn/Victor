@@ -1,7 +1,7 @@
 import random
 from typing import List, Union, Tuple, Dict, Any
 from .ast import (AST, BinOp, Number, DieRoll, UnaryOp,
-                  IfNode, Assign, Reference, String)
+                  IfNode, Assign, Reference, String, Call)
 from .tokens import PLUS, MUL, DIV, IDIV, LESSTHAN, GREATERTHAN, RESERVED
 from .nodes import NodeVisitor
 from .parser import Parser
@@ -110,3 +110,12 @@ class Interpreter(NodeVisitor):
 
     def visit_String(self, node: String, **kwargs: Any):
         return node.value
+
+    def visit_Call(self, node: Call, **kwargs: Any):
+        method = node.callable.value
+
+        if method == 'MAX':
+            args = [self.visit(p) for p in node.parameters]
+            return max(*args)
+        else:
+            raise NotImplementedError(method)

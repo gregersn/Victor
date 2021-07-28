@@ -1,7 +1,8 @@
 from victor.interpreter import Parser
 from victor.interpreter import Tokenizer
 from victor.interpreter.ast import (
-    BinOp, DieRoll, Number, Reference, UnaryOp, Assign, IfNode)
+    BinOp, DieRoll, Number, Reference, UnaryOp, Assign,
+    IfNode, Call)
 
 
 def parse(prg: str) -> Parser:
@@ -104,3 +105,14 @@ def test_multiline_expr():
 def test_if_else_with_logic():
     res = parse("if 1 < 2 and 3 < 2 then 1 else 2").conditional_expr()
     assert isinstance(res, IfNode)
+
+
+def test_builtin_function_max():
+    res = parse("max(2, 4)").function_call()
+    assert isinstance(res, Call), res
+
+    res = parse("max(3, 1)").function_call()
+    assert isinstance(res, Call), res
+
+    res = parse("max(2, 4, 3, 5)").function_call()
+    assert isinstance(res, Call), res
