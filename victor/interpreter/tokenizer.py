@@ -2,7 +2,7 @@ from .tokens import (Token, TokenDieRoll)
 from .tokens import (STRING, DIEROLL, NUMBER,
                      REFERENCE, ID, PLUS, MINUS, MUL, IDIV, DIV,
                      LESSTHAN, GREATERTHAN, LPAREN, RPAREN,
-                     ASSIGN, NEWLINE, EOF)
+                     ASSIGN, NEWLINE, COMMA, EOF)
 from .keywords import RESERVED_KEYWORDS
 from typing import List, Optional
 from .position import Position
@@ -168,6 +168,9 @@ class Tokenizer:
                 return Token(NEWLINE, '\n', self.pos)
             elif self.current_char == '"':
                 return self.string()
+            elif self.current_char == ',':
+                self.advance()
+                return Token(COMMA, ',')
             else:
                 pos_start = self.pos.copy()
                 raise IllegalCharError(

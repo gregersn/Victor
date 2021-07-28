@@ -96,3 +96,9 @@ class Assign(AST):
         self.left = left
         self.token = self.op = op
         self.right = right
+
+
+class Call(AST):
+    def __init__(self, callable: Token, parameters: List[AST]):
+        self.token = self.callable = callable
+        self.parameters = parameters

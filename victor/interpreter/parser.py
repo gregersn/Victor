@@ -1,10 +1,10 @@
 from typing import Callable, List, Optional, Any, Tuple
 from .tokens import (Token, RESERVED, ID, DIEROLL, STRING,
                      NUMBER, REFERENCE, LPAREN, RPAREN, EOF, PLUS, MINUS, MUL,
-                     IDIV, DIV, LESSTHAN, GREATERTHAN, ASSIGN, NEWLINE)
+                     IDIV, DIV, LESSTHAN, GREATERTHAN, ASSIGN, NEWLINE, COMMA)
 from .tokenizer import Tokenizer
 from .ast import (AST, BinOp, IfNode, Var, NoOp,
-                  DieRoll, Number, String, Reference, UnaryOp, Assign)
+                  DieRoll, Number, String, Reference, UnaryOp, Assign, Call)
 
 
 class Parser:
@@ -18,7 +18,8 @@ class Parser:
         self.current_token = self._lexer.get_next_token()
 
     def error(self, msg: str = ''):
-        raise Exception(f"Parsing error at {self.token_index}: {msg}")
+        raise Exception(
+            f"Parsing error at {self.token_index}, {self.current_token}: {msg}")
 
     def eat(self, _type: str, value: Any = None):
         token = self.current_token
@@ -100,11 +101,27 @@ class Parser:
         #  empty:
         return NoOp()
 
+    def function_call(self):
+        assert self.current_token is not None
+        fun = self.current_token
+        params: List[AST] = []
+        self.eat(RESERVED)
+        self.eat(LPAREN)
+        while (self.current_token is not None and
+               self.current_token.type != RPAREN):
+            params.append(self.expr())
+            if self.current_token.type != RPAREN:
+                self.eat(COMMA)
+        self.eat(RPAREN)
+
+        return Call(fun, params)
+
     def atom(self) -> AST:
         """
         atom : INT|REF|DIEROLL|ID|STRING
              : LPAREN expr RPAREN
              : conditional_expr
+             : function_call
         """
         if self.current_token is not None:
             token = self.current_token
@@ -130,6 +147,8 @@ class Parser:
                 return token
             elif token.type == EOF:
                 return NoOp()
+            elif token.type == RESERVED and token.value != 'IF':
+                return self.function_call()
             else:
                 return self.conditional_expr()
 

@@ -12,8 +12,11 @@ term ::= factor (( MUL | DIV | IDIV ) factor )*
 
 factor ::= (PLUS | MINUS) factor | atom
 
+function_call ::= FUNCTION_NAME LPAREN (atom (COMMA atom)*)
+
 atom ::= INT|REF|DIEROLL|ID|STRING
      ::= LPAREN expr RPAREN
      ::= conditional_expr
+     ::= function_call
 
 conditional_expr ::= IF expr THEN expr (ELIF expr THEN expr)* (ELSE expr)?
