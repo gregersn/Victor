@@ -101,7 +101,9 @@ class Tokenizer:
         result: str = ''
         self.advance()
         while (self.current_char is not None and
-               (self.current_char.isalpha() or self.current_char.isdigit())):
+               (self.current_char.isalpha() or
+                self.current_char.isdigit() or
+                self.current_char in ['_'])):
             result += self.current_char
             self.advance()
 

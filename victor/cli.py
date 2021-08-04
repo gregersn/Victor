@@ -1,11 +1,30 @@
 #!/usr/bin/env python3
 import click
 from . import generate
-from . import fill_sheet
+from . import fill_sheet, fill_pdf
 from typing import Optional
 
 
-@click.command()
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
+@click.argument('charactersheet', type=click.Path(exists=True))
+@click.argument('datafile', type=click.Path(exists=True))
+@click.option('--output', type=click.Path(), required=False,
+              help="Destination file")
+def fill(charactersheet: str, datafile: str, output: str = "output.pdf"):
+    """Fill CHARACTERSHEET with DATA
+
+    CHARACTERSHEET is a file to fill, or metadata describing the file to fill.
+    DATA is yaml or json file containing the data to fill in.
+    """
+    fill_pdf(charactersheet, datafile, output)
+
+
+@cli.command()
 @click.argument('filename', type=click.Path(exists=True))
 @click.option('--average/--no-average', default=False, required=False,
               help="Output the average values instead of random.")
@@ -13,8 +32,8 @@ from typing import Optional
               help="Template to fill with generated data.")
 @click.option('--output', type=click.Path(), required=False,
               help="Where to save filled template.")
-def main(filename: str, average: bool = False, fill: Optional[str] = None,
-         output: Optional[str] = None):
+def create(filename: str, average: bool = False, fill: Optional[str] = None,
+           output: Optional[str] = None):
     character = generate(filename, average=average)
 
     if fill is not None:
@@ -25,4 +44,4 @@ def main(filename: str, average: bool = False, fill: Optional[str] = None,
 
 
 if __name__ == '__main__':
-    main()
+    cli()

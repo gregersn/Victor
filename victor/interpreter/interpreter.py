@@ -31,37 +31,46 @@ class Interpreter(NodeVisitor):
         return 0, self.output
 
     def visit_BinOp(self, node: BinOp, **kwargs: Any):
+        left_value = self.visit(node.left, **kwargs)
+        right_value = self.visit(node.right, **kwargs)
+
+        if node.op.type in [PLUS, MUL, DIV, IDIV]:
+            if left_value is None:
+                raise TypeError("Unsupported left value type.")
+            if right_value is None:
+                raise TypeError("Unsupported right value type.")
+
         if node.op.type == PLUS:
-            return (self.visit(node.left, **kwargs) +
-                    self.visit(node.right, **kwargs))
+            return (left_value +
+                    right_value)
 
         elif node.op.type == MUL:
-            return (self.visit(node.left, **kwargs) *
-                    self.visit(node.right, **kwargs))
+            return (left_value *
+                    right_value)
 
         elif node.op.type == DIV:
-            return (self.visit(node.left, **kwargs) //
-                    self.visit(node.right, **kwargs))
+            return (left_value //
+                    right_value)
 
         elif node.op.type == IDIV:
-            return (self.visit(node.left, **kwargs) //
-                    self.visit(node.right, **kwargs))
+            return (left_value //
+                    right_value)
 
         elif node.op.type == LESSTHAN:
-            return (self.visit(node.left, **kwargs) <
-                    self.visit(node.right, **kwargs))
+            return (left_value <
+                    right_value)
 
         elif node.op.type == GREATERTHAN:
-            return (self.visit(node.left, **kwargs) >
-                    self.visit(node.right, **kwargs))
+            return (left_value >
+                    right_value)
 
         elif node.op.matches(RESERVED, 'AND'):
-            return (self.visit(node.left, **kwargs) and
-                    self.visit(node.right, **kwargs))
+            return (left_value and
+                    right_value)
 
         elif node.op.matches(RESERVED, 'OR'):
-            return (self.visit(node.left, **kwargs) or
-                    self.visit(node.right, **kwargs))
+            return (left_value or
+                    right_value)
 
         raise NotImplementedError(f"Unknown BinOp {node.op.type}")
 
