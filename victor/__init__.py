@@ -31,4 +31,4 @@ def generate(filename: Union[Path, str], average: bool = False) -> Character:
 def fill_sheet(filename: Union[Path, str],
                character: Character,
                output: Union[Path, str, None]) -> None:
-    fill_pdf(filename, character, output)
+    fill_pdf(filename, character.variables, output)

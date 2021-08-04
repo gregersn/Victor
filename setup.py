@@ -8,11 +8,12 @@ setup(
     include_package_data=True,
     install_requires=[
         'Click',
-        'pikepdf'
+        'PyMuPDF',
+        'pyaml'
     ],
     entry_points={
         'console_scripts': [
-            'victor = victor.cli:main'
+            'victor = victor.cli:cli'
         ]
     }
 )

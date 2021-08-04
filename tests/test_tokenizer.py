@@ -49,9 +49,9 @@ def test_parenthesized_expression():
 
 
 def test_variable_reference():
-    tokenizer = Tokenizer("($SIZ + $CON) // 10")
+    tokenizer = Tokenizer("($SIZ + $CON) // 10 + $Mixed_Case_With_Underscore")
     tokens = tokenizer.make_tokens()
-    assert len(tokens) == 7
+    assert len(tokens) == 9
     assert tokens[0].type == "LPAREN"
 
     assert tokens[1].type == "REFERENCE"
@@ -68,6 +68,9 @@ def test_variable_reference():
 
     assert tokens[6].type == "NUMBER"
     assert tokens[6].value == 10
+
+    assert tokens[7].type == 'PLUS'
+    assert tokens[8].type == 'REFERENCE'
 
 
 def test_conditional():
