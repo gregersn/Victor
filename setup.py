@@ -9,7 +9,8 @@ setup(
     install_requires=[
         'Click',
         'PyMuPDF',
-        'pyaml'
+        'pyaml',
+        'PySimpleGUI'
     ],
     entry_points={
         'console_scripts': [

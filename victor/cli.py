@@ -3,11 +3,14 @@ import click
 from . import generate
 from . import fill_sheet, fill_pdf
 from typing import Optional
+from .gui import start_gui
 
 
-@click.group()
-def cli():
-    pass
+@click.group(invoke_without_command=True)
+@click.pass_context
+def cli(ctx: click.Context):
+    if ctx.invoked_subcommand is None:
+        start_gui()
 
 
 @cli.command()
