@@ -77,6 +77,12 @@ def test_assign_string():
     assert name == 'Somename'
 
 
+def test_blank_program():
+    res = interpret("\n\n\n\n")
+
+    assert True
+
+
 def test_assignment_reference():
     res = interpret("Foo: 2\n$Foo + 5")
     assert res[1][0] == 2
