@@ -10,7 +10,7 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -38,3 +38,35 @@ jobs:
         run: |
           pytest -vvv
         continue-on-error: ${{ contains(matrix.python-version, 'beta')}}
+
+  build:
+    needs: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          pip install -r requirements.txt
+          pip install -e .
+          pip install -r requirements-dev.txt
+
+      - name: Build package
+        run: |
+          pyinstaller build.spec --onefile
+        
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Victor-${{ matrix.os }}
+          path: dist/
