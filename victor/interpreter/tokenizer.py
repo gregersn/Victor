@@ -166,7 +166,8 @@ class Tokenizer:
                 self.advance()
                 return Token(ASSIGN, ':', self.pos)
             elif self.current_char == '\n':
-                self.advance()
+                while self.current_char == '\n':
+                    self.advance()
                 return Token(NEWLINE, '\n', self.pos)
             elif self.current_char == '"':
                 return self.string()

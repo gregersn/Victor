@@ -220,6 +220,10 @@ class Parser:
         """
         listing: List[AST] = []
 
+        while (self.current_token is not None and
+               self.current_token.type == NEWLINE):
+            self.eat(NEWLINE)
+
         listing.append(self.expr())
         while (self.current_token is not None and
                self.current_token.type == NEWLINE):
