@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import click
-from . import generate
-from . import fill_sheet, fill_pdf
+from victor import generate
+from victor import fill_sheet, fill_pdf
 from typing import Optional
-from .gui import start_gui
+from victor.gui import start_gui
 
 
 @click.group(invoke_without_command=True)
