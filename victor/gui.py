@@ -24,13 +24,14 @@ def start_gui(*args: List[Any], **kwargs: Dict[str, Any]):
         [sg.Menu(MENU_DEF)],
         [sg.Text("Input")],
         [sg.Multiline(DEFAULT_PROGRAM,
-                      key="input", size=(40, 12))],
+                      key="input", size=(40, 12), expand_x=True, expand_y=True)],
         [sg.Text("Output")],
-        [sg.Multiline(key="output", size=(40, 12))],
+        [sg.Multiline(key="output", size=(40, 12),
+                      expand_x=True, expand_y=True)],
         [sg.Button("Roll"), sg.Button("Average")],
     ]
 
-    window = sg.Window("Victor", layout)
+    window = sg.Window("Victor", layout, resizable=True)
     input_program = ''
 
     running = True
