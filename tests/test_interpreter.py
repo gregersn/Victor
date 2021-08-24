@@ -31,6 +31,24 @@ def test_complex_die_roll():
     assert res[1][0] == 82.5
 
 
+def test_d0():
+    res = interpret("d0")
+    assert res[0] == 0
+    assert res[1][0] == 0
+
+    res = interpret("d0", average=True)
+    assert res[0] == 0
+    assert res[1][0] == 0
+
+    res = interpret("2d0")
+    assert res[0] == 0
+    assert res[1][0] == 0
+
+    res = interpret("2d0", average=True)
+    assert res[0] == 0
+    assert res[1][0] == 0
+
+
 def test_unary():
     res = interpret("-4")
     assert res[1][0] == -4

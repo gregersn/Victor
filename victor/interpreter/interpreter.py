@@ -85,6 +85,9 @@ class Interpreter(NodeVisitor):
         multiplier = int(v[0]) if v[0].isdigit() else 1
         dice_size = int(v[1])
 
+        if dice_size == 0:
+            return 0
+
         if average:
             return multiplier * (dice_size + 1) / 2
         else:
