@@ -39,8 +39,23 @@ jobs:
           pytest -vvv
         continue-on-error: ${{ contains(matrix.python-version, 'beta')}}
 
-  build:
+  pre_release:
     needs: test
+    runs-on: "ubuntu-latest"
+    # if: github.ref == 'refs/heads/master
+    steps:
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        id: create_pre_release
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            *.zip
+
+  build:
+    needs: [pre_release, test]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -65,8 +80,18 @@ jobs:
       - name: Build package
         run: |
           pyinstaller build.spec --onefile
-        
-      - uses: actions/upload-artifact@v2
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
         with:
           name: Victor-${{ matrix.os }}
           path: dist/
+
+      - name: Push artifacts to pre_release
+        uses: nanoufo/action-upload-artifacts-and-release-assets@v1.4
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          path: dist/Victor-${{ matrix.os }}
+          release-upload-url: ${{ needs.pre_release.outputs.upload_url }}
+          upload-release-files: true
