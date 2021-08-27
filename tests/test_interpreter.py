@@ -1,4 +1,4 @@
-from victor.interpreter import interpret
+from victor.interpreter import interpret, get_interpreter
 from victor.interpreter import Interpreter, Tokenizer, Parser
 
 
@@ -98,3 +98,20 @@ def test_builtin_function_max():
 
     res = interpret("max(2, 4, 3, 5)")
     assert res[1][0] == 5
+
+
+def test_table_lookup():
+    choices = ['a', 'b', 'c']
+    interpreter = get_interpreter("choose($some_list)")
+    interpreter.system_variables['some_list'] = choices
+    res = interpreter.interpret()
+    assert res[1][0] in choices
+
+    # TODO: Add picking of multiple
+    return
+    interpreter = get_interpreter("choose($some_list, 2)")
+    interpreter.system_variables['some_list'] = choices
+    res = interpreter.interpret()
+    assert len(res[1]) == 2
+    assert res[1][0] in choices
+    assert res[1][1] in choices

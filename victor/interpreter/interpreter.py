@@ -10,11 +10,14 @@ from .parser import Parser
 class Interpreter(NodeVisitor):
     _parser: Parser
     _tree: Union[AST, List[AST], None]
+    variables: Dict[str, Any]
+    system_variables: Dict[str, Any]
 
     def __init__(self, parser: Parser):
         self._parser = parser
         self._tree = None
         self.variables: Dict[str, Any] = {}
+        self.system_variables = {}
         self.output: List[Any] = []
 
     def interpret(self, **kwargs: Any) -> Tuple[int, List[Any]]:
@@ -115,7 +118,8 @@ class Interpreter(NodeVisitor):
         return self.variables[node.left.value]
 
     def visit_Reference(self, node: Reference, **kwargs: Any):
-        return self.variables[node.value]
+        return self.variables.get(node.value,
+                                  self.system_variables.get(node.value))
 
     def visit_String(self, node: String, **kwargs: Any):
         return node.value
@@ -123,8 +127,15 @@ class Interpreter(NodeVisitor):
     def visit_Call(self, node: Call, **kwargs: Any):
         method = node.callable.value
 
+        args = [self.visit(p) for p in node.parameters]
         if method == 'MAX':
-            args = [self.visit(p) for p in node.parameters]
             return max(*args)
+        if method == 'MIN':
+            return min(*args)
+        if method == 'CHOOSE':
+            choices = list(args[0])
+            # count = args[1] if len(args) > 1 else 1
+            random.shuffle(choices)
+            return choices.pop()
         else:
             raise NotImplementedError(method)

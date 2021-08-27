@@ -7,5 +7,6 @@ RESERVED_KEYWORDS = {
     'else': Token('RESERVED', 'ELSE'),
     'and': Token('RESERVED', 'AND'),
     'or': Token('RESERVED', 'OR'),
-    'max': Token('RESERVED', 'MAX')
+    'max': Token('RESERVED', 'MAX'),
+    'choose': Token('RESERVED', 'CHOOSE')
 }
