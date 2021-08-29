@@ -7,6 +7,10 @@ from .keywords import RESERVED_KEYWORDS
 from typing import List, Optional
 from .position import Position
 
+ID_CHARACTERS = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+                 'abcdefghijklmnopqrstuvwxyz' +
+                 '1234567890_')
+
 
 class Error(BaseException):
     def __init__(self,
@@ -112,7 +116,7 @@ class Tokenizer:
     def _id(self) -> Token:
         result: str = ''
 
-        while self.current_char is not None and self.current_char.isalpha():
+        while (self.current_char is not None and self.current_char in ID_CHARACTERS):
             result += self.current_char
             self.advance()
 

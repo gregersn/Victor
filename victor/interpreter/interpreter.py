@@ -1,10 +1,13 @@
 import random
+import yaml
 from typing import List, Union, Tuple, Dict, Any
 from .ast import (AST, BinOp, Number, DieRoll, UnaryOp,
                   IfNode, Assign, Reference, String, Call)
 from .tokens import PLUS, MUL, DIV, IDIV, LESSTHAN, GREATERTHAN, RESERVED
 from .nodes import NodeVisitor
 from .parser import Parser
+
+from pathlib import Path
 
 
 class Interpreter(NodeVisitor):
@@ -32,6 +35,13 @@ class Interpreter(NodeVisitor):
             self.output = [self.visit(self._tree, **kwargs), ]
 
         return 0, self.output
+
+    def load_system(self, filename: Path):
+        assert filename.is_file()
+        assert filename.suffix == '.yaml' or filename.suffix == '.yml'
+
+        with open(filename, 'r') as f:
+            self.system_variables = yaml.safe_load(f)
 
     def visit_BinOp(self, node: BinOp, **kwargs: Any):
         left_value = self.visit(node.left, **kwargs)
@@ -137,5 +147,9 @@ class Interpreter(NodeVisitor):
             # count = args[1] if len(args) > 1 else 1
             random.shuffle(choices)
             return choices.pop()
+        if method == 'LOAD_SYSTEM':
+            system_name = args[0]
+            print(f"Load file with name: {system_name}")
+            self.load_system(Path(system_name))
         else:
             raise NotImplementedError(method)
