@@ -98,11 +98,16 @@ class Interpreter(NodeVisitor):
         multiplier = int(v[0]) if v[0].isdigit() else 1
         dice_size = int(v[1])
 
+        if dice_size < 2:
+            return dice_size
+
         if average:
             return multiplier * (dice_size + 1) / 2
         else:
-            return sum([random.randint(1, dice_size)
-                        for _ in range(multiplier)])
+            if multiplier == 1:
+                return random.randint(1, dice_size)
+            return [random.randint(1, dice_size)
+                    for _ in range(multiplier)]
 
     def visit_UnaryOp(self, node: UnaryOp, **kwargs: Any):
         if node.op.value == '-':
@@ -137,19 +142,23 @@ class Interpreter(NodeVisitor):
     def visit_Call(self, node: Call, **kwargs: Any):
         method = node.callable.value
 
-        args = [self.visit(p) for p in node.parameters]
         if method == 'MAX':
-            return max(*args)
+            return max(*[self.visit(p) for p in node.parameters])
         if method == 'MIN':
-            return min(*args)
+            return min(*[self.visit(p) for p in node.parameters])
         if method == 'CHOOSE':
-            choices = list(args[0])
+            choices = list(self.visit(node.parameters[0]))
             # count = args[1] if len(args) > 1 else 1
             random.shuffle(choices)
             return choices.pop()
         if method == 'LOAD_SYSTEM':
-            system_name = args[0]
+            system_name = self.visit(node.parameters[0])
             print(f"Load file with name: {system_name}")
             self.load_system(Path(system_name))
+            return
+        if method == "ROLL":
+            count = self.visit(node.parameters[0])
+            die = node.parameters[1]
+            return [self.visit(die) for _ in range(count)]
         else:
             raise NotImplementedError(method)

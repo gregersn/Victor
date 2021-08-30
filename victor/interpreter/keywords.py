@@ -9,5 +9,7 @@ RESERVED_KEYWORDS = {
     'or': Token('RESERVED', 'OR'),
     'max': Token('RESERVED', 'MAX'),
     'choose': Token('RESERVED', 'CHOOSE'),
-    'load_system': Token('RESERVED', 'LOAD_SYSTEM')
+    'load_system': Token('RESERVED', 'LOAD_SYSTEM'),
+    'roll': Token('RESERVED', 'ROLL'),
+    'pool': Token('RESERVED', 'POOL')
 }
