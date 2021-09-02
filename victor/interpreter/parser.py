@@ -17,6 +17,11 @@ class Parser:
         self.token_index = -1
         self.current_token = self._lexer.get_next_token()
 
+    def program(self, data: str):
+        self._lexer.program(data)
+        self.token_index = -1
+        self.current_token = self._lexer.get_next_token()
+
     def error(self, msg: str = ''):
         raise Exception(
             f"Parsing error at {self.token_index}, {self.current_token}: {msg}")
@@ -214,7 +219,7 @@ class Parser:
                                      ((RESERVED, 'AND'),
                                       (RESERVED, 'OR')))
 
-    def program(self) -> List[AST]:
+    def rule_program(self) -> List[AST]:
         """
         program: expr (NEWLINE expr)*
         """
@@ -233,4 +238,4 @@ class Parser:
         return listing
 
     def parse(self):
-        return self.program()
+        return self.rule_program()

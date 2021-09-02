@@ -17,7 +17,14 @@ class Interpreter(NodeVisitor):
         self.variables: Dict[str, Any] = {}
         self.output: List[Any] = []
 
-    def interpret(self, **kwargs: Any) -> Tuple[int, List[Any]]:
+    def interpret(self,
+                  program: str = "",
+                  **kwargs: Any) -> Tuple[int, List[Any]]:
+
+        if program:
+            self._tree = None
+            self._parser.program(program)
+
         if self._tree is None:
             self._tree = self._parser.parse()
 

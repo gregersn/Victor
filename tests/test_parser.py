@@ -98,7 +98,7 @@ def test_assignment_string_expr():
 
 
 def test_multiline_expr():
-    res = parse("Foo: 1\n1 + 2").program()
+    res = parse("Foo: 1\n1 + 2").rule_program()
     assert isinstance(res, list), res
 
 

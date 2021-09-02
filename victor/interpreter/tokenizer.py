@@ -36,8 +36,11 @@ class Tokenizer:
     filename: str
 
     def __init__(self, data: str = ""):
-        self._data = data
         self.filename = ""
+        self.program(data)
+
+    def program(self, data: str):
+        self._data = data
         self.pos = Position(-1, 0, -1, self.filename, self._data)
         self.current_char = None
 

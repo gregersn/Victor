@@ -1,4 +1,4 @@
-from victor.interpreter import interpret
+from victor.interpreter import get_interpreter, interpret
 from victor.interpreter import Interpreter, Tokenizer, Parser
 
 
@@ -116,3 +116,22 @@ def test_builtin_function_max():
 
     res = interpret("max(2, 4, 3, 5)")
     assert res[1][0] == 5
+
+
+def test_initialized_interpreter():
+    interpreter = get_interpreter()
+
+    res = interpreter.interpret("d6", average=True)
+
+    assert res[0] == 0
+    assert res[1][0] == 3.5, res
+
+    res = interpreter.interpret(average=True)
+
+    assert res[0] == 0
+    assert res[1][0] == 3.5, res
+
+    res = interpreter.interpret("d10", average=True)
+
+    assert res[0] == 0
+    assert res[1][0] == 5.5, res

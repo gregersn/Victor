@@ -9,7 +9,7 @@ def interpret(program: str, **kwargs: Any):
     return interpreter.interpret(**kwargs)
 
 
-def get_interpreter(program: str, variables: Optional[Dict[str, Any]] = None):
+def get_interpreter(program: str = "", variables: Optional[Dict[str, Any]] = None):
     tokenizer = Tokenizer(program)
     parser = Parser(tokenizer)
     interpreter = Interpreter(parser)
