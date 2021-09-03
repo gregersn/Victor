@@ -3,7 +3,7 @@ from .tokens import (STRING, DIEROLL, NUMBER,
                      REFERENCE, ID, PLUS, MINUS, MUL, IDIV, DIV,
                      LESSTHAN, GREATERTHAN, LPAREN, RPAREN,
                      ASSIGN, NEWLINE, COMMA, EOF)
-from .keywords import RESERVED_KEYWORDS
+from .keywords import RESERVED_KEYWORDS, SYSTEM_KEYWORDS
 from typing import List, Optional
 from .position import Position
 
@@ -85,6 +85,11 @@ class Tokenizer:
             result += self.current_char
             self.advance()
 
+        return Token(NUMBER, int(result), self.pos)
+
+    def dieroll(self) -> Token:
+        result: str = ''
+
         next_char = self.peek()
         if self.current_char is not None and next_char is not None:
             if self.current_char.lower() == 'd' and next_char.isdigit():
@@ -97,8 +102,6 @@ class Tokenizer:
                     self.advance()
 
                 return TokenDieRoll(DIEROLL, result.upper())
-
-        return Token(NUMBER, int(result), self.pos)
 
     def variable_reference(self) -> Token:
         result: str = ''
@@ -119,7 +122,13 @@ class Tokenizer:
             result += self.current_char
             self.advance()
 
-        return RESERVED_KEYWORDS.get(result, Token(ID, result, self.pos))
+        if result in RESERVED_KEYWORDS:
+            return RESERVED_KEYWORDS[result]
+
+        if result in SYSTEM_KEYWORDS:
+            return SYSTEM_KEYWORDS[result]
+
+        return Token(ID, result, self.pos)
 
     def get_next_token(self) -> Token:
         while self.current_char is not None:
@@ -151,7 +160,7 @@ class Tokenizer:
                 return Token(GREATERTHAN, '>', self.pos)
             elif (self.current_char.lower() == 'd' and
                   next_char is not None and next_char.isdigit()):
-                return self.number()
+                return self.dieroll()
             elif self.current_char.isalpha():
                 return self._id()
             elif self.current_char.isdigit():

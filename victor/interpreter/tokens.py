@@ -3,6 +3,7 @@ from .position import Position
 
 ID = 'ID'
 RESERVED = 'RESERVED'
+SYSTEM = 'SYSTEM'
 ASSIGN = 'ASSIGN'
 REFERENCE = 'REFERENCE'
 

@@ -1,5 +1,5 @@
 program ::= expr (NEWLINE expr)*
-expr ::= assignment | logical_expr
+expr ::= assignment | logical_expr | dice_pool
 assignment ::= IDENTIFIER ASSIGN expr
 logical_expr ::= comparative_expr ((AND|OR) comparative_expr)*
 
@@ -12,11 +12,23 @@ term ::= factor (( MUL | DIV | IDIV ) factor )*
 
 factor ::= (PLUS | MINUS) factor | atom
 
-function_call ::= FUNCTION_NAME LPAREN (atom (COMMA atom)*)
+function_call ::= FUNCTION_NAME LPAREN (atom (COMMA atom)*) RPAREN
+
+internal_function ::= SYSTEM_FUNCTION atom
+
+dice_pool ::= factor DIEROLL
 
 atom ::= INT|REF|DIEROLL|ID|STRING
      ::= LPAREN expr RPAREN
      ::= conditional_expr
+     ::= internal_function
      ::= function_call
 
 conditional_expr ::= IF expr THEN expr (ELIF expr THEN expr)* (ELSE expr)?
+
+
+TROLL grammar:
+
+dicepool ::= atom dieroll
+dieroll ::= D NUMBER
+atom ::= NUMBER

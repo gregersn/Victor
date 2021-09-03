@@ -9,3 +9,7 @@ RESERVED_KEYWORDS = {
     'or': Token('RESERVED', 'OR'),
     'max': Token('RESERVED', 'MAX')
 }
+
+SYSTEM_KEYWORDS = {
+    'sum': Token('SYSTEM', 'SUM')
+}

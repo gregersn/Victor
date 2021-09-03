@@ -21,6 +21,12 @@ def test_die_roll():
         assert isinstance(res[1][0], int)
 
 
+def test_dice_pool():
+    res = interpret("3d6", average=True)
+    assert res[0] == 0
+    assert res[1][0] == 10.5
+
+
 def test_complex_die_roll():
     res = interpret("(2d6 + 6) * 5", average=True)
     assert res[0] == 0

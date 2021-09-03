@@ -31,6 +31,21 @@ class Number(AST):
         return f"<Number {self.value}>"
 
 
+class DicePool(AST):
+    token: Token
+    multiplier: AST
+    roll: DieRoll
+
+    def __init__(self, multiplier: AST, token: Token, roll: DieRoll):
+        self.token = token
+        self.value = f'{multiplier.value}{roll.value}'
+        self.roll = roll
+        self.multiplier = multiplier
+
+    def __repr__(self) -> str:
+        return f"<DicePool {self.multiplier}{self.roll}"
+
+
 class String(AST):
     def __init__(self, token: Token):
         self.token = token

@@ -1,7 +1,7 @@
 from victor.interpreter import Parser
 from victor.interpreter import Tokenizer
 from victor.interpreter.ast import (
-    BinOp, DieRoll, Number, Reference, UnaryOp, Assign,
+    BinOp, DicePool, DieRoll, Number, Reference, UnaryOp, Assign,
     IfNode, Call)
 
 
@@ -10,13 +10,13 @@ def parse(prg: str) -> Parser:
 
 
 def test_dieroll():
-    tokenizer = Tokenizer("3d6")
+    tokenizer = Tokenizer("d6")
     parser = Parser(tokenizer)
 
     res = parser.factor()
 
     assert isinstance(res, DieRoll)
-    assert res.value == "3D6"
+    assert res.value == "D6"
 
 
 def test_atoms():
@@ -36,13 +36,13 @@ def test_atoms():
     assert isinstance(res, Reference), res
     assert res.value == "foo", res.value
 
-    tokenizer = Tokenizer("4d10")
+    tokenizer = Tokenizer("d10")
     parser = Parser(tokenizer)
 
     res = parser.atom()
 
     assert isinstance(res, DieRoll), res
-    assert res.value == "4D10", res.value
+    assert res.value == "D10", res.value
 
     tokenizer = Tokenizer("(6)")
     parser = Parser(tokenizer)
@@ -51,6 +51,16 @@ def test_atoms():
 
     assert isinstance(res, Number)
     assert res.value == 6
+
+
+def test_dicepool():
+    tokenizer = Tokenizer("4d10")
+    parser = Parser(tokenizer)
+
+    res = parser.rule_dicepool()
+
+    assert isinstance(res, DicePool), res
+    assert res.value == "4D10", res.value
 
 
 def test_factors():

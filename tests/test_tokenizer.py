@@ -21,31 +21,35 @@ def test_simple_die():
 def test_multi_die():
     tokenizer = Tokenizer("3d6")
     tokens = tokenizer.make_tokens()
-    assert len(tokens) == 1
-    assert tokens[0].type == "DIEROLL"
-    assert tokens[0].value == "3D6"
+    assert len(tokens) == 2
+    assert tokens[0].type == "NUMBER"
+    assert tokens[0].value == 3
+    assert tokens[1].type == 'DIEROLL'
+    assert tokens[1].value == 'D6'
 
 
 def test_die_multiplied():
     tokenizer = Tokenizer("3D6 * 5")
     tokens = tokenizer.make_tokens()
-    assert len(tokens) == 3
-    assert tokens[0].type == "DIEROLL"
-    assert tokens[1].type == "MUL"
-    assert tokens[2].type == "NUMBER"
+    assert len(tokens) == 4
+    assert tokens[0].type == "NUMBER"
+    assert tokens[1].type == "DIEROLL"
+    assert tokens[2].type == "MUL"
+    assert tokens[3].type == "NUMBER"
 
 
 def test_parenthesized_expression():
     tokenizer = Tokenizer("(2D6 + 6) * 5")
     tokens = tokenizer.make_tokens()
-    assert len(tokens) == 7
+    assert len(tokens) == 8
     assert tokens[0].type == "LPAREN"
-    assert tokens[1].type == "DIEROLL"
-    assert tokens[2].type == "PLUS"
-    assert tokens[3].type == "NUMBER"
-    assert tokens[4].type == "RPAREN"
-    assert tokens[5].type == "MUL"
-    assert tokens[6].type == "NUMBER"
+    assert tokens[1].type == "NUMBER"
+    assert tokens[2].type == "DIEROLL"
+    assert tokens[3].type == "PLUS"
+    assert tokens[4].type == "NUMBER"
+    assert tokens[5].type == "RPAREN"
+    assert tokens[6].type == "MUL"
+    assert tokens[7].type == "NUMBER"
 
 
 def test_variable_reference():
@@ -122,3 +126,12 @@ def test_program():
     assert tokens[4].type == "NUMBER"
     assert tokens[5].type == "PLUS"
     assert tokens[6].type == "NUMBER"
+
+
+def test_system_function():
+    tokenizer = Tokenizer("sum 3d6")
+    tokens = tokenizer.make_tokens()
+    assert len(tokens) == 3
+    assert tokens[0].type == "SYSTEM", tokens[0]
+    assert tokens[1].type == "NUMBER", tokens[1]
+    assert tokens[2].type == "DIEROLL", tokens[1]

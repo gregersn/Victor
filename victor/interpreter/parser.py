@@ -1,9 +1,10 @@
 from typing import Callable, List, Optional, Any, Tuple
 from .tokens import (Token, RESERVED, ID, DIEROLL, STRING,
                      NUMBER, REFERENCE, LPAREN, RPAREN, EOF, PLUS, MINUS, MUL,
-                     IDIV, DIV, LESSTHAN, GREATERTHAN, ASSIGN, NEWLINE, COMMA)
+                     IDIV, DIV, LESSTHAN, GREATERTHAN, ASSIGN, NEWLINE, COMMA,
+                     SYSTEM)
 from .tokenizer import Tokenizer
-from .ast import (AST, BinOp, IfNode, Var, NoOp,
+from .ast import (AST, BinOp, DicePool, IfNode, Var, NoOp,
                   DieRoll, Number, String, Reference, UnaryOp, Assign, Call)
 
 
@@ -121,6 +122,20 @@ class Parser:
 
         return Call(fun, params)
 
+    def internal_func(self):
+        """
+        SYSTEM_KEYWORD expr
+        """
+        assert self.current_token is not None
+        fun = self.current_token
+        self.eat(SYSTEM)
+
+        if fun.value == 'SUM':
+            param = self.expr()
+            return Call(fun, [param])
+
+        raise NotImplementedError(fun)
+
     def atom(self) -> AST:
         """
         atom : INT|REF|DIEROLL|ID|STRING
@@ -165,7 +180,7 @@ class Parser:
         #                      DIEROLL |
         #                      LPAREN expr RPAREN |
         #                      variable
-        # facotr: (PLUS|MINUS) factor | atom
+        # factor: (PLUS|MINUS) factor | atom
         token = self.current_token
 
         if token is None:
@@ -207,6 +222,19 @@ class Parser:
         assert right is not None
         return Assign(token, op, right)
 
+    def rule_dicepool(self) -> DicePool:
+        """
+        factor DIEROLL
+        """
+        multiplier = self.factor()
+        if self.current_token is not None:
+            roll = self.current_token
+            self.eat(DIEROLL)
+
+            return DicePool(multiplier, roll, DieRoll(roll))
+
+        raise IOError
+
     def expr(self) -> AST:
         """
         expr : comparative_expr ((AND | OR) comparative_expr)*
@@ -214,6 +242,9 @@ class Parser:
         """
         if self.current_token is not None and self.current_token.type == ID:
             return self.assignment_expr()
+
+        if self.current_token is not None and self.current_token.type == SYSTEM:
+            return self.internal_func()
 
         return self.binary_operation(self.comparative_expr,
                                      ((RESERVED, 'AND'),

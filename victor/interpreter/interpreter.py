@@ -98,8 +98,10 @@ class Interpreter(NodeVisitor):
         if average:
             return multiplier * (dice_size + 1) / 2
         else:
-            return sum([random.randint(1, dice_size)
-                        for _ in range(multiplier)])
+            if v[0].isdigit():
+                return [random.randint(1, dice_size)
+                        for _ in range(multiplier)]
+            return random.randint(1, dice_size)
 
     def visit_UnaryOp(self, node: UnaryOp, **kwargs: Any):
         if node.op.value == '-':
@@ -136,5 +138,8 @@ class Interpreter(NodeVisitor):
         if method == 'MAX':
             args = [self.visit(p) for p in node.parameters]
             return max(*args)
+        if method == 'SUM':
+            args = [self.visit(p) for p in node.parameters]
+            return sum(*args)
         else:
             raise NotImplementedError(method)
