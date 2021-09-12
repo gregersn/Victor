@@ -31,6 +31,8 @@ EOF = 'EOF'
 class Token:
     pos_start: Optional[Position]
     pos_end: Optional[Position]
+    _type: str
+    _value: Any
 
     def __init__(self,
                  _type: str,

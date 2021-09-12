@@ -29,6 +29,8 @@ conditional_expr ::= IF expr THEN expr (ELIF expr THEN expr)* (ELSE expr)?
 
 TROLL grammar:
 
-dicepool ::= atom dieroll
+dicepool ::= NUMBER dieroll
+         ::= singleton#dieroll
 dieroll ::= D NUMBER
-atom ::= NUMBER
+
+singleton ::= NUMBER | dieroll

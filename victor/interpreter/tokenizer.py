@@ -6,27 +6,7 @@ from .tokens import (STRING, DIEROLL, NUMBER,
 from .keywords import RESERVED_KEYWORDS, SYSTEM_KEYWORDS
 from typing import List, Optional
 from .position import Position
-
-
-class Error(BaseException):
-    def __init__(self,
-                 pos_start: Position,
-                 pos_end: Position,
-                 name: str,
-                 details: str):
-        self.pos_start = pos_start
-        self.pos_end = pos_end
-        self.name = name
-        self.details = details
-
-    def __str__(self):
-        return (f'{self.name}: {self.details}' +
-                f' at {self.pos_start.ln}, {self.pos_start.col}')
-
-
-class IllegalCharError(Error):
-    def __init__(self, pos_start: Position, pos_end: Position, details: str):
-        super().__init__(pos_start, pos_end, "Illegal character", details)
+from .error import IllegalCharError
 
 
 class Tokenizer:
@@ -103,6 +83,8 @@ class Tokenizer:
 
                 return TokenDieRoll(DIEROLL, result.upper())
 
+        raise Exception
+
     def variable_reference(self) -> Token:
         result: str = ''
         self.advance()
@@ -158,34 +140,34 @@ class Tokenizer:
             elif self.current_char == '>':
                 self.advance()
                 return Token(GREATERTHAN, '>', self.pos)
-            elif (self.current_char.lower() == 'd' and
-                  next_char is not None and next_char.isdigit()):
-                return self.dieroll()
-            elif self.current_char.isalpha():
-                return self._id()
-            elif self.current_char.isdigit():
-                return self.number()
             elif self.current_char == '(':
                 self.advance()
                 return Token(LPAREN, '(', self.pos)
             elif self.current_char == ')':
                 self.advance()
                 return Token(RPAREN, ')', self.pos)
-            elif (self.current_char == '$'
-                  and next_char is not None and next_char.isalpha()):
-                return self.variable_reference()
-            elif self.current_char == ':':
-                self.advance()
-                return Token(ASSIGN, ':', self.pos)
             elif self.current_char == '\n':
                 while self.current_char == '\n':
                     self.advance()
                 return Token(NEWLINE, '\n', self.pos)
+            elif self.current_char == ':':
+                self.advance()
+                return Token(ASSIGN, ':', self.pos)
             elif self.current_char == '"':
                 return self.string()
             elif self.current_char == ',':
                 self.advance()
                 return Token(COMMA, ',')
+            elif self.current_char.isdigit():
+                return self.number()
+            elif (self.current_char.lower() == 'd' and
+                  next_char is not None and next_char.isdigit()):
+                return self.dieroll()
+            elif self.current_char.isalpha():
+                return self._id()
+            elif (self.current_char == '$'
+                  and next_char is not None and next_char.isalpha()):
+                return self.variable_reference()
             else:
                 pos_start = self.pos.copy()
                 raise IllegalCharError(
