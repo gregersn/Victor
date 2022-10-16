@@ -42,3 +42,23 @@ def test_sum():
     assert isinstance(res[1][0], int)
     assert res[1][0] >= 3
     assert res[1][0] <= 18
+
+
+def test_variables():
+    i = get_interpreter()
+    res = i.interpret("N ~ 10")
+
+    assert res[0] == 0
+    assert res[1][0] == 10
+
+    res = i.interpret("N := 4; N ~ 10")
+    assert res[0] == 0
+    assert res[1][0] == 4
+
+    res = i.interpret("g ~ {4, 5, 6}")
+    assert res[0] == 0
+    assert res[1][0] == [4, 5, 6]
+
+    res = i.interpret("g := {1, 2, 3}; g ~ {4, 5, 6}")
+    assert res[0] == 0
+    assert res[1][0] == [1, 2, 3]

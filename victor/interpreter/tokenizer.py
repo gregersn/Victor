@@ -3,6 +3,10 @@ from .tokens import (STRING, DIEROLL, NUMBER,
                      REFERENCE, ID, PLUS, MINUS, MUL, IDIV, DIV,
                      LESSTHAN, GREATERTHAN, LPAREN, RPAREN,
                      ASSIGN, NEWLINE, COMMA, EOF)
+
+from .tokens import (SEMICOLON, LBRACE, RBRACE, ALPHA, AMPERSAND,
+                     HASH, QUESTIONMARK, QUOTE, LBRACKET, RBRACKET,
+                     TILDE, BANG)
 from .keywords import RESERVED_KEYWORDS, SYSTEM_KEYWORDS
 from typing import List, Optional
 from .position import Position
@@ -121,43 +125,100 @@ class Tokenizer:
             if self.current_char == '+':
                 self.advance()
                 return Token(PLUS, '+', self.pos)
-            if self.current_char == '-':
-                self.advance()
-                return Token(MINUS, '-', self.pos)
+
             elif self.current_char == '*':
                 self.advance()
                 return Token(MUL, '*', self.pos)
+
             elif self.current_char == '/' and next_char == '/':
                 self.advance()
                 self.advance()
                 return Token(IDIV, '//', self.pos)
+
             elif self.current_char == '/':
                 self.advance()
                 return Token(DIV, '/', self.pos)
-            elif self.current_char == '<':
-                self.advance()
-                return Token(LESSTHAN, '<', self.pos)
-            elif self.current_char == '>':
-                self.advance()
-                return Token(GREATERTHAN, '>', self.pos)
+
             elif self.current_char == '(':
                 self.advance()
                 return Token(LPAREN, '(', self.pos)
             elif self.current_char == ')':
                 self.advance()
                 return Token(RPAREN, ')', self.pos)
+
+            elif self.current_char == ',':
+                self.advance()
+                return Token(COMMA, ',')
+
+            elif self.current_char == ';':
+                self.advance()
+                return Token(SEMICOLON, ';')
+
+            elif self.current_char == '{':
+                self.advance()
+                return Token(LBRACE, '{', self.pos)
+            elif self.current_char == '}':
+                self.advance()
+                return Token(RBRACE, '}', self.pos)
+
+            elif self.current_char == '@':
+                self.advance()
+                return Token(ALPHA, '@', self.pos)
+
+            elif self.current_char == '&':
+                self.advance()
+                return Token(AMPERSAND, '&', self.pos)
+
+            elif self.current_char == '#':
+                self.advance()
+                return Token(HASH, '#', self.pos)
+
+            elif self.current_char == '?':
+                self.advance()
+                return Token(QUESTIONMARK, '?', self.pos)
+
+            elif self.current_char == "'":
+                self.advance()
+                return Token(QUOTE, "'", self.pos)
+
+            elif self.current_char == '[':
+                self.advance()
+                return Token(LBRACKET, '[', self.pos)
+            elif self.current_char == ']':
+                self.advance()
+                return Token(RBRACKET, ']', self.pos)
+
+            elif self.current_char == "~":
+                self.advance()
+                return Token(TILDE, "~", self.pos)
+
+            elif self.current_char == "!":
+                self.advance()
+                return Token(BANG, "!", self.pos)
+
+            elif (self.current_char == ':' and
+                    next_char is not None and next_char == '='):
+                self.advance()
+                self.advance()
+                return Token(ASSIGN, ':=', self.pos)
+
+            elif self.current_char == '-':
+                self.advance()
+                return Token(MINUS, '-', self.pos)
+
+            elif self.current_char == '<':
+                self.advance()
+                return Token(LESSTHAN, '<', self.pos)
+            elif self.current_char == '>':
+                self.advance()
+                return Token(GREATERTHAN, '>', self.pos)
             elif self.current_char == '\n':
                 while self.current_char == '\n':
                     self.advance()
                 return Token(NEWLINE, '\n', self.pos)
-            elif self.current_char == ':':
-                self.advance()
-                return Token(ASSIGN, ':', self.pos)
+
             elif self.current_char == '"':
                 return self.string()
-            elif self.current_char == ',':
-                self.advance()
-                return Token(COMMA, ',')
             elif self.current_char.isdigit():
                 return self.number()
             elif (self.current_char.lower() == 'd' and
