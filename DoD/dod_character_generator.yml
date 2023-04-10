@@ -1,0 +1,301 @@
+---
+# Lookup/random tables and longer values.
+tables:
+  kin:
+    1-4: Human
+    5-7: Halfling
+    8-9: Dwarf
+    10: Elf
+    11: Mallard
+    12: Wolfkin
+  abilities:
+    Human:
+      - Adaptive
+    Halfling:
+      - Hard to catch
+    Dwarf:
+      - Unforgiving
+    Elf:
+      - Inner peace
+    Mallard:
+      - "Ill-tempered"
+      - "Webbed feet"
+    Wolfkin:
+      - "Hunting instincts"
+  name:
+    Human:
+      - Joruna
+      - Tym
+      - Halvelda
+      - Garmander
+      - Verolun
+      - Lothar
+    Halfling:
+      - Snappy
+      - Brine
+      - Cottar
+      - Bumble
+      - Perrywick
+      - Theoline
+    Dwarf:
+      - Tinderrock
+      - Halwyld
+      - Tymolan
+      - Traut
+      - Urd
+      - Fermer
+    Elf:
+      - Arasin
+      - Illyriana
+      - Galvander
+      - Tyrindelia
+      - Erwilnor
+      - Andremone
+    Mallard:
+      - Qwucksum
+      - Splats
+      - Moggee
+      - Groddy
+      - Blisandia
+      - Hackleswell
+    Wolfkin:
+      - Wyld
+      - Wolfshadow
+      - Lunariem
+      - Obdurian
+      - Frostbite
+      - Wuldenhall
+  profession:
+    - Artisan
+    - Bard
+    - Fighter
+    - Hunter
+    - Knight
+    - Mage
+    - Mariner
+    - Merchant
+    - Scholar
+    - Thief
+  age:
+    1-3: Young
+    4-5: Adult
+    6: Old
+  kin_movement:
+    Human: 10
+    Halfling: 8
+    Dwarf: 8
+    Elf: 10
+    Mallard: 8
+    Wolfkin: 12
+  agility_movement:
+    1-6: -4
+    7-9: -2
+    13-15: 2
+    16-18: 4
+  damage_bonus:
+    "1-12": "-"
+    13-16: "+D4"
+    "17-20": "+D6"
+  base_chance:
+    1-5: 3
+    6-8: 4
+    9-12: 5
+    13-15: 6
+    16-18: 7
+  
+  profession_skills:
+    Artisan:
+      - axes
+      - brawling
+      - crafting
+      - hammers
+      - knives
+      - sleight_of_hand
+      - spot_hidden
+      - swords
+    Bard:
+      - acrobatics
+      - bluffing
+      - evade
+      - knives
+      - languages
+      - myths_and_legends
+      - performance
+      - persuasion
+    Fighter:
+      - axes
+      - bows
+      - brawling
+      - crossbows
+      - evade
+      - hammers
+      - spears
+      - swords
+    Hunter:
+      - acrobatics
+      - awareness
+      - bows
+      - bushcraft
+      - hunting_and_fishing
+      - knives
+      - slings
+      - sneaking
+    Knight:
+      - beast_lore
+      - hammers
+      - myths_and_legends
+      - performance
+      - persuasion
+      - riding
+      - spears
+      - swords
+    Mariner:
+      - acrobatics
+      - awareness
+      - hunting_and_fishing
+      - knives
+      - languages
+      - seamanship
+      - swimming
+      - swords
+    Merchant:
+      - awareness
+      - bartering
+      - bluffing
+      - evade
+      - knives
+      - persuasion
+      - sleight_of_hand
+      - spot_hidden
+    Scholar:
+      - awareness
+      - beast_lore
+      - bushcraft
+      - evade
+      - healing
+      - languages
+      - myths_and_legends
+      - spot_hidden
+    Thief:
+      - acrobatics
+      - awareness
+      - bluffing
+      - evade
+      - knives
+      - sleight_of_hand
+      - sneaking
+      - spot_hidden
+
+# This is the actual generators
+
+fields:
+  kin:
+    type: random_table
+    table: kin
+  abilities:
+    type: table_value
+    table: abilities.$kin
+  profession:
+    type: random_table
+    table: profession
+  age:
+    type: random_table
+    table: age
+  name:
+    type: random_table
+    table: name.$kin
+  attributes:
+    type: roll
+    group:
+      - STR
+      - CON
+      - AGL
+      - INT
+      - WIL
+      - CHA
+    expression: sum largest 3 4d6  
+  movement:
+    type: add
+    left:
+      type: table_value
+      table: kin_movement.$kin
+    right:
+      type: ranged_table
+      table: agility_movement.$AGL
+  damage_bonus_strength:
+    type: ranged_table
+    table: damage_bonus.$STR
+  damage_bonus_agility:
+    type: ranged_table
+    table: damage_bonus.$AGL
+  hit_points: $CON
+  willpower_points: $WIL  
+
+  profession_skills:
+    group:
+      type: pick_from_table
+      table: profession_skills.$profession
+      count: 6
+    type: set
+    sub: value
+    value:
+      type: multiply
+      left:
+        type: reference
+        value: $$.value
+      right:
+        type: constant
+        value: 2
+
+
+disabled:
+  agl_skills:
+    type: ranged_table
+    table: base_chance.$AGL
+    group:
+      - acrobatics
+      - evade
+      - hunting_and_fishing
+      - riding
+      - sleight_of_hand
+      - sneaking
+      - swimming
+      - bows
+      - crossbows
+      - knives
+      - slings
+      - staves
+
+  int_skills:
+    type: ranged_table
+    table: base_chance.$INT
+    group:
+      - awareness
+      - beast_lore
+      - bushcraft
+      - healing
+      - languages
+      - myths_and_legends
+      - seamanship
+      - spot_hidden
+
+  cha_skills:
+    type: ranged_table
+    table: base_chance.$CHA
+    group:
+      - bartering
+      - bluffing
+      - performance
+      - persuasion
+
+  str_skills:
+    type: ranged_table
+    table: base_chance.$STR
+    group:
+      - crafting
+      - axes
+      - brawling
+      - hammers
+      - spears
+      - swords
+  

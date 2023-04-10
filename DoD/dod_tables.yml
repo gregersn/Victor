@@ -1,0 +1,102 @@
+---
+- title: Kin
+  candidates:
+    1-4: Human
+    5-7: Halfling
+    8-9: Dwarf
+    10: Elf
+    11: Mallard
+    12: Wolfkin
+- title: Abilities
+  dependencies:
+    - "$kin"
+  entries:
+    Human:
+      - Adaptive
+    Halfling:
+      - Hard to catch
+    Dwarf:
+      - Unforgiving
+    Elf:
+      - Inner peace
+    Mallard:
+      - "Ill-tempered"
+      - "Webbed feet"
+    Wolfkin:
+      - "Hunting instincts"
+- title: Profession
+  candidates:
+    - Artisan
+    - Bard
+    - Fighter
+    - Hunter
+    - Knight
+    - Mage
+    - Mariner
+    - Merchant
+    - Scholar
+    - Thief
+- title: Age
+  candidates:
+    1-3: Young
+    4-5: Adult
+    6: Old
+- title: Name
+  dependencies:
+    - "$kin"
+  entries:
+    Human:
+      candidates:
+        - Joruna
+        - Tym
+        - Halvelda
+        - Garmander
+        - Verolun
+        - Lothar
+    Halfling:
+      candidates:
+        - Snappy
+        - Brine
+        - Cottar
+        - Bumble
+        - Perrywick
+        - Theoline
+    Dwarf:
+      candidates:
+        - Tinderrock
+        - Halwyld
+        - Tymolan
+        - Traut
+        - Urd
+        - Fermer
+    Elf:
+      candidates:
+        - Arasin
+        - Illyriana
+        - Galvander
+        - Tyrindelia
+        - Erwilnor
+        - Andremone
+    Mallard:
+      candidates:
+        - Qwucksum
+        - Splats
+        - Moggee
+        - Groddy
+        - Blisandia
+        - Hackleswell
+    Wolfkin:
+      candidates:
+        - Wyld
+        - Wolfshadow
+        - Lunariem
+        - Obdurian
+        - Frostbite
+        - Wuldenhall
+- title: Attributes
+  roll: sum largest 3 4d6
+- title: Movement
+  dependencies:
+    - "$kin"
+    - "$AGL"
+  
