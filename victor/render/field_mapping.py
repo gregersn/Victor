@@ -3,7 +3,7 @@ from pathlib import Path
 import yaml
 import re
 
-from victor.interpreter import get_interpreter
+# from victor.interpreter import get_interpreter
 
 ExpandedMapping = Dict[str, str]
 Values = Union[str, int]

@@ -5,10 +5,13 @@ from pathlib import Path
 from victor.interpreter import get_interpreter
 
 
-DEFAULT_PROGRAM = """STR: 3D6
-DEX: 3D6
-INT: 3D6
-HP: ($DEX + $STR) / 10 + 1
+DEFAULT_PROGRAM = """name = ['Wolfgang', 'Amadeus', 'Beethoven']
+
+$.STR = roll('sum 3D6')
+$.DEX = roll('sum 3D6')
+$.INT = roll('sum 3D6')
+$.HP = ($.DEX + $.STR) / 10 + 1
+$.NAME = random_choice(name)
 """
 
 MENU_DEF = [['&File', ['&Open', '&Save', 'Save &As...', 'E&xit']]]
@@ -50,18 +53,18 @@ def start_gui(*args: List[Any], **kwargs: Dict[str, Any]):
             break
 
         if isinstance(values, dict):
-            input_program: str = values['input']
-            interpreter = get_interpreter(input_program)
+            input_program: str = values['input']      
+            result_data = {}      
 
             if event == 'Roll':
-                interpreter.interpret()
+                interpreter = get_interpreter(input_program, result_data)
 
             elif event == 'Average':
+                raise NotImplementedError
                 interpreter.interpret(average=True)
-
             output: sg.Element = window['output']
             output_string = "\n".join(
-                [f"{k}: {v}" for k, v in interpreter.variables.items()])
+                [f"{k}: {v}" for k, v in result_data.items()])
             output.Update(value=output_string)
 
         if event == 'Open':

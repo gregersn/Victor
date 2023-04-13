@@ -2,7 +2,7 @@ from typing import Union
 from pathlib import Path
 
 from victor.reader import load_rules
-from victor.interpreter import Tokenizer, Parser, Interpreter
+# from victor.interpreter import Tokenizer, Parser, Interpreter
 
 from victor.render import fill_pdf
 from victor.character import Character

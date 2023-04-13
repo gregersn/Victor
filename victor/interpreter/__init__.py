@@ -1,18 +1,18 @@
-from typing import Any, Optional, Dict
-from .tokenizer import Tokenizer
-from .parser import Parser
-from .interpreter import Interpreter
+from typing import Any, Dict, Sequence
+import random
+from ringneck import run
+from trill import trill
 
+def roll(input: str):
+    res = trill(input)
+    return res[0][0]
 
-def interpret(program: str, **kwargs: Any):
-    interpreter = get_interpreter(program)
-    return interpreter.interpret(**kwargs)
+def random_choice(input: Sequence[Any]):
+    return random.choice(input)
 
-
-def get_interpreter(program: str = "", variables: Optional[Dict[str, Any]] = None):
-    tokenizer = Tokenizer(program)
-    parser = Parser(tokenizer)
-    interpreter = Interpreter(parser)
-    if variables is not None:
-        interpreter.variables = variables
-    return interpreter
+def get_interpreter(program: str, global_values: Dict[str, Any]):
+    builtins = {
+        'roll': roll,
+        'random_choice': random_choice
+    }
+    return run(program, builtins=builtins, global_variables=global_values)
