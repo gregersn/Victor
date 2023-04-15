@@ -1,0 +1,17 @@
+tables = load_tables('./DoD/dod_tables.yml')
+$.kin = random_table(tables.kin)
+$.abilities = table_lookup(tables.abilities, $.kin)
+$.profession = random_table(tables.profession)
+$.age = random_table(tables.age)
+$.name = random_table(tables.name.get($.kin))
+$.['STR', 'CON', 'AGL', 'INT', 'WIL', 'CHA'] = roll("sum largest 3 4d6")
+
+biggest_attribute = highest($.['STR', 'CON', 'AGL', 'INT', 'WIL', 'CHA'])
+key_attribute = table_lookup(tables.key_attribute, $.profession)
+
+swap(max($.['STR', 'CON', 'AGL', 'INT', 'WIL', 'CHA']), $.get(table_lookup(tables.key_attribute, $.profession)))
+$.movement = table_lookup(tables.kin_movement, $.kin) + ranged_table(tables.agility_movement, $.AGL)
+$.damage_bonus_strength = ranged_table(tables.damage_bonus, $.STR)
+$.damage_bonus_agility = ranged_table(tables.damage_bonus, $.AGL)
+$.hit_points = $.CON
+$.willpower_points = $.WIL

@@ -1,0 +1,12 @@
+$.Name = "Guff"
+$.STR = roll("(sum 1d6+6)*5")
+$.CON = roll("(sum 2d6+6)*5")
+$.SIZ = roll("(sum 3d6+6)*5")
+$.DEX = roll("(sum 4d6+6)*5")
+$.INT = roll("(sum 5d6+6)*5")
+$.POW = roll("(sum 6d6+6)*5")
+$.HitPoints = ($.CON + $.SIZ) / 10
+$.MagicPoints = $.POW / 5
+$.Move ?= 7 if $.DEX < $.SIZ and $.STR < $.SIZ
+$.Move ?= 9 if $.STR > $.SIZ and $.DEX > $.SIZ
+$.Move ?= 8
