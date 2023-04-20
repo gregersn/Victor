@@ -79,6 +79,25 @@ age:
   1-3: Young
   4-5: Adult
   6: Old
+
+ages:
+  Young:
+    skills: 2
+    attributes:
+      AGL: 1
+      CON: 1
+  Adult:
+    skills: 4
+    attributes: {}
+  Old:
+    skills: 6
+    attributes:
+      STR: -2
+      AGL: -2
+      CON: -2
+      INT: 1
+      WIL: 1
+
 kin_movement:
   Human: 10
   Halfling: 8
@@ -113,6 +132,40 @@ key_attribute:
   Merchant: CHA
   Scholar: INT
   Thief: AGL
+
+
+skills:
+  acrobatics: AGL
+  awareness: INT
+  bartering: CHA
+  beast_lore: INT
+  bluffing: CHA
+  bushcraft: INT
+  crafting: STR
+  evade: AGL
+  healing: INT
+  hunting_and_fishing: AGL
+  languages: INT
+  myths_and_legends: INT
+  performance: CHA
+  persuasion: CHA
+  riding: AGL
+  seamanship: INT
+  sleight_of_hand: AGL
+  sneaking: AGL
+  spot_hidden: INT
+  swimming: AGL
+
+  axes: STR
+  bows: AGL
+  brawling: STR
+  crossbows: AGL
+  hammers: STR
+  knives: AGL
+  slings: AGL
+  spears: STR
+  staves: AGL
+  swords: STR
 
 profession_skills:
   Artisan:
@@ -196,3 +249,4 @@ profession_skills:
     - sleight_of_hand
     - sneaking
     - spot_hidden
+  Mage: []

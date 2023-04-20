@@ -5,10 +5,19 @@ $.profession = random_table(tables.profession)
 $.age = random_table(tables.age)
 $.name = random_table(tables.name.get($.kin))
 $.['STR', 'CON', 'AGL', 'INT', 'WIL', 'CHA'] = roll("sum largest 3 4d6")
-
-swap(max($.['STR', 'CON', 'AGL', 'INT', 'WIL', 'CHA']), $.get(table_lookup(tables.key_attribute, $.profession)))
+swap_largest(['STR', 'CON', 'AGL', 'INT', 'WIL', 'CHA'], table_lookup(tables.key_attribute, $.profession))
 $.movement = table_lookup(tables.kin_movement, $.kin) + ranged_table(tables.agility_movement, $.AGL)
+age_info = table_lookup(tables.ages, $.age)
+apply_modifiers(age_info.attributes)
 $.damage_bonus_strength = ranged_table(tables.damage_bonus, $.STR)
 $.damage_bonus_agility = ranged_table(tables.damage_bonus, $.AGL)
 $.hit_points = $.CON
 $.willpower_points = $.WIL
+trained_skills = 6 + age_info.skills
+available_profession_skills = table_lookup(tables.profession_skills, $.profession)
+chosen_profession_skills = random_table(available_profession_skills, 6)
+remaining_available_skills = tables.skills.keys() - chosen_profession_skills
+remaining_skill_count = trained_skills - 6
+chosen_skills = chosen_profession_skills + random_table(remaining_available_skills, remaining_skill_count)
+$.[*tables.skills.keys()] = ranged_table(tables.base_chance, $.get(tables.skills.get(%)))
+$.[*chosen_skills] = ranged_table(tables.base_chance, $.get(tables.skills.get(%))) * 2
