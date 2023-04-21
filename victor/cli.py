@@ -3,13 +3,13 @@ import click
 from victor import generate
 from victor import fill_sheet, fill_pdf
 from typing import Optional
-from victor.gui import start_gui
 
 
 @click.group(invoke_without_command=True)
 @click.pass_context
 def cli(ctx: click.Context):
     if ctx.invoked_subcommand is None:
+        from victor.gui import start_gui
         start_gui()
 
 
@@ -45,6 +45,11 @@ def create(filename: str, average: bool = False, fill: Optional[str] = None,
         for key, value in character.items():
             if isinstance(value, list):
                 print(f"{key}: {', '.join(value)}")
+                continue
+            if isinstance(value, dict):
+                print(f"{key}:")
+                for key, v in value.items():
+                    print(f"- {key}: {v}")
                 continue
             print(f"{key}: {value}")
 

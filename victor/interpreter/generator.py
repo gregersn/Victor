@@ -1,6 +1,6 @@
 """Victor's guide to creation."""
 import math
-from typing import Any, Callable, Dict, List, Sequence, Union
+from typing import Any, Callable, Dict, List, Union
 import random
 from ringneck import run
 from trill import trill
@@ -15,12 +15,14 @@ def pick_from_random_table(table: Tables, count: int = 1) -> Any:
     The table can be a simple list, with equal chance,
     or a dictionary with ranges for each alternative as keys.
     """
+    result = None
+
     if isinstance(table, set):
         table = list(table)
     if isinstance(table, list):
         result = random.sample(table, k=min(count, len(table)))
 
-    else:
+    if isinstance(table, dict):
         cum_weights: List[int] = []
         alternatives: List[Any] = []
         for key, value in table.items():
@@ -35,7 +37,7 @@ def pick_from_random_table(table: Tables, count: int = 1) -> Any:
 
         result = random.choices(alternatives, cum_weights=cum_weights, k=count)
 
-    if count == 1:
+    if count == 1 and result:
         return result[0]
     return result
 

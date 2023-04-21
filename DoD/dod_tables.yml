@@ -75,6 +75,11 @@ profession:
   - Merchant
   - Scholar
   - Thief
+subprofession:
+  Mage:
+    - Animist
+    - Elementalist
+    - Mentalist
 age:
   1-3: Young
   4-5: Adult
@@ -167,6 +172,11 @@ skills:
   staves: AGL
   swords: STR
 
+secondary_skills:
+  Animism: INT
+  Elementalism: INT
+  Mentalism: INT
+
 profession_skills:
   Artisan:
     - axes
@@ -250,3 +260,29 @@ profession_skills:
     - sneaking
     - spot_hidden
   Mage: []
+
+subprofession_skills:
+  Animist:
+    - beast_lore
+    - bushcraft
+    - evade
+    - healing
+    - hunting_and_fishing
+    - sneaking
+    - staves
+  Elementalist:
+    - awareness
+    - evade
+    - healing
+    - languages
+    - myths_and_legends
+    - spot_hidden
+    - staves
+  Mentalist:
+    - acrobatics
+    - awareness
+    - brawling
+    - evade
+    - healing
+    - languages
+    - myths_and_legends

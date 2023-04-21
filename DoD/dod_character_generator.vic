@@ -1,23 +1,54 @@
+# Load in a file containing all the tables
 tables = load_tables('./DoD/dod_tables.yml')
+# Pick Kin
 $.kin = random_table(tables.kin)
+# Get the abilities provided by kin
 $.abilities = table_lookup(tables.abilities, $.kin)
+
+# Choose profession
 $.profession = random_table(tables.profession)
+
+# Get a subprofession (will happen if Mage)
+$.subprofession = random_table(table_lookup(tables.subprofession, $.profession)) 
+
+# Random age
 $.age = random_table(tables.age)
+
+# Random name, based on Kin
 $.name = random_table(tables.name.get($.kin))
+
+# Roll attributes
 $.['STR', 'CON', 'AGL', 'INT', 'WIL', 'CHA'] = roll("sum largest 3 4d6")
+
+# Swap the largest attribute with the key attribute for profession
 swap_largest(['STR', 'CON', 'AGL', 'INT', 'WIL', 'CHA'], table_lookup(tables.key_attribute, $.profession))
+
+# Look up movement from table
 $.movement = table_lookup(tables.kin_movement, $.kin) + ranged_table(tables.agility_movement, $.AGL)
+
+# Get and modify attributes based on age
 age_info = table_lookup(tables.ages, $.age)
 apply_modifiers(age_info.attributes)
+
+# Set misc derived values
 $.damage_bonus_strength = ranged_table(tables.damage_bonus, $.STR)
 $.damage_bonus_agility = ranged_table(tables.damage_bonus, $.AGL)
 $.hit_points = $.CON
 $.willpower_points = $.WIL
+
+# Total number of skills to choose
 trained_skills = 6 + age_info.skills
+trained_skills = trained_skills - 1 if $.profession == "Mage" else trained_skills
 available_profession_skills = table_lookup(tables.profession_skills, $.profession)
 chosen_profession_skills = random_table(available_profession_skills, 6)
+
+$.secondary_skills = {}
 remaining_available_skills = tables.skills.keys() - chosen_profession_skills
-remaining_skill_count = trained_skills - 6
-chosen_skills = chosen_profession_skills + random_table(remaining_available_skills, remaining_skill_count)
-$.[*tables.skills.keys()] = ranged_table(tables.base_chance, $.get(tables.skills.get(%)))
-$.[*chosen_skills] = ranged_table(tables.base_chance, $.get(tables.skills.get(%))) * 2
+trained_skills = trained_skills - 6
+chosen_skills = chosen_profession_skills + random_table(remaining_available_skills, trained_skills)
+
+# Set all skill sto base value
+# $.[*tables.skills.keys()] = ranged_table(tables.base_chance, $.get(tables.skills.get(%)))
+
+# Set chosen skills to double value
+# $.[*chosen_skills] = ranged_table(tables.base_chance, $.get(tables.skills.get(%))) * 2
