@@ -1,5 +1,5 @@
 ---
-# Lookup/random tables and longer values.
+# Random tables
 kin:
   1-4: Human
   5-7: Halfling
@@ -7,20 +7,24 @@ kin:
   10: Elf
   11: Mallard
   12: Wolfkin
-abilities:
-  Human:
-    - Adaptive
-  Halfling:
-    - Hard to catch
-  Dwarf:
-    - Unforgiving
-  Elf:
-    - Inner peace
-  Mallard:
-    - "Ill-tempered"
-    - "Webbed feet"
-  Wolfkin:
-    - "Hunting instincts"
+
+profession:
+  - Artisan
+  - Bard
+  - Fighter
+  - Hunter
+  - Knight
+  - Mage
+  - Mariner
+  - Merchant
+  - Scholar
+  - Thief
+
+age:
+  1-3: Young
+  4-5: Adult
+  6: Old
+
 name:
   Human:
     - Joruna
@@ -64,26 +68,438 @@ name:
     - Obdurian
     - Frostbite
     - Wuldenhall
-profession:
-  - Artisan
-  - Bard
-  - Fighter
-  - Hunter
-  - Knight
-  - Mage
-  - Mariner
-  - Merchant
-  - Scholar
-  - Thief
-subprofession:
+
+
+weakness:
+  - Gullible
+  - Greedy
+  - Think-Skinned
+  - Foolhardy
+  - Fainthearted
+  - Monster Slayer
+  - Intolerant
+  - Slothful
+  - Gluttonous
+  - Kleptomaniac
+  - Vain
+  - Reckless
+  - Fearful of Magic
+  - Craving Knowledge
+  - Child of the Wild
+  - Boastful
+  - Violent
+  - Overbearing
+  - Cynic
+  - Haughty
+
+memento:
+  - Your trusty old shoes
+  - A simple silver medallion
+  - A letter from an old friend or relative
+  - A ragged old journal
+  - A bracelet passed down in your family
+  - A wooden figurine you got as a child
+  - A strangely shaped stone
+  - A copper coin from a treasure sought by your mother or father
+  - An old pewter tankard
+  - A horn taken as a trophy from a monster
+  - A fang taken as a trophy from a beast
+  - A couple of simple dice made of bone
+  - A locket containing a lock of hair
+  - An ornate key
+  - A hand-drawn map you inherited
+  - A ring with an inscription
+  - A bone whistle
+  - Your mother's or father's ragged old hat
+  - A griffin feather
+  - A beautifully carved pipe
+
+appearance:
+  - Ugly scar across your cheek
+  - Strange headgear
+  - Abnormally pale and pasty
+  - A constant smile on your lips
+  - Icy, penetrating gaze
+  - A bit of extra weight around the middle
+  - Thin and wiry
+  - Abnormal amounts of body hair (depending on kin)
+  - Balding (depending on kin)
+  - Prominent tattoo
+  - Foul body odor
+  - Glorious hairstyle
+  - Limp
+  - Filthy
+  - Honest blue eyes
+  - Silver tooth
+  - Heavily perfumed
+  - Different-colored eyes
+  - Hissing voice
+  - Weathered face
+
+# Info tables
+kin_info:
+  Human:
+    abilities:
+      - Adaptive
+    movement: 10
+  Halfling:
+    abilities:
+      - Hard to catch
+    movement: 8
+  Dwarf:
+    abilities:
+      - Unforgiving
+    movement: 8
+  Elf:
+    abilities:
+      - Inner peace
+    movement: 10
+  Mallard:
+    abilities:
+      - "Ill-tempered"
+      - "Webbed feet"
+    movement: 8
+  Wolfkin:
+    abilities:
+      - "Hunting instincts"
+    movement: 12
+
+profession_info:
+  Artisan:
+    key_attribute: STR
+    heroic_ability:
+      - Master Blacksmith
+      - Master Carpenter
+      - Master Tanner
+    gear:
+      1-2:
+        - Warhammer (small)
+        - Leather armor
+        - Black smith's tools
+        - Torch
+        - Flint & tinder
+        - D8 food rations
+        - D8 silver
+      3-4:
+        - Handaxe
+        - Leather armor
+        - Carpentry tools
+        - Torch
+        - Rope (hemp)
+        - Flint & tinder
+        - D8 food rations
+        - D8 silver
+      5-6:
+        - Knife
+        - Leather armor
+        - Tanner's tools
+        - Lantern
+        - Lamp oil
+        - Flint & tinder
+        - D8 food rations
+        - D8 silver
+    nickname:
+      - Stonehammer
+      - Woodcleaver
+      - Strongfit
+      - Barrelmaker
+      - Bridgebuilder
+      - Ironmaster
+
+  Bard: 
+    key_attribute: CHA
+    heroic_ability:
+      - Musician
+    gear:
+      1-2:
+        - Lyre
+        - Knife
+        - Oil lamp
+        - Lamp oil
+        - Flint & tinder
+        - D6 food rations
+        - D8 silver
+      3-4:
+        - Flute
+        - Dagger
+        - Rope (hemp)
+        - Torch
+        - Flint & tinder
+        - D6 food rations
+        - D8 silver
+      5-6:
+        - Horn
+        - Knife
+        - Torch
+        - Flint & tinder
+        - D6 food rations
+        - D8 silver
+  Fighter: 
+    key_attribute: STR
+    heroic_ability:
+      - Veteran
+    gear:
+      1-2:
+        - Broadsword/battle axe/morning star
+        - Small shield
+        - Chainmail
+        - Torch
+        - Flint & tinder
+        - D6 food rations
+        - D6 silver
+      3-4:
+        - Short sword/handaxe/short spear
+        - Light crossbow
+        - Quiver
+        - Leather armor
+        - Torch
+        - Flint & tinder
+        - D6 food rations
+        - D6 silver
+      5-6:
+        - Long spear
+        - Studded leather armor
+        - Open helmet
+        - Torch
+        - Flint & tinder
+        - D6 food rations
+        - D6 silver
+  Hunter: 
+    key_attribute: AGL
+    heroic_ability:
+      - Companion
+    gear:
+      1-2:
+        - Dagger
+        - Short bow
+        - Quiver
+        - Leather armor
+        - Sleeping pelt
+        - Torch
+        - Flint & tinder
+        - Rope (hemp)
+        - Snare
+        - D8 food rations
+        - D6 silver
+      3-4:
+        - Knife
+        - Longbow
+        - Quiver
+        - Leather armor
+        - Sleeping pelt
+        - Torch
+        - Flint & tinder
+        - Rope (hemp)
+        - Fishing rod
+        - D8 food rations
+        - D6 silver
+      5-6:
+        - Dagger
+        - Sling
+        - Leather armor
+        - Sleeping pelt
+        - Torch
+        - Flint & tinder
+        - Rope (hemp)
+        - Snare
+        - D8 food rations
+        - D6 silver
+      
+  Knight: 
+    key_attribute: STR
+    heroic_ability:
+      - Guardian
+    gear:
+      1-2:
+        - Broadsword/morning start
+        - Shield (small)
+        - Plate armor
+        - Great  helm
+        - Torch
+        - Flint & tinder
+        - D6 food rations
+        - D12 silver
+      3-4:
+        - Flail/warhammer (small)
+        - Shield (small)
+        - Chainmail
+        - Open helmet
+        - Torch
+        - Flint & tinder
+        - D6 food rations
+        - D12 silver
+      5-6:
+        - Short sword
+        - Lance
+        - Shield (small)
+        - Cainmail
+        - Open helmet
+        - Combat trained horse
+        - D6 food rations
+        - D12 silver
   Mage:
-    - Animist
-    - Elementalist
-    - Mentalist
-age:
-  1-3: Young
-  4-5: Adult
-  6: Old
+    key_attribute: WIL
+    subprofession:
+      - Animist
+      - Elementalist
+      - Mentalist
+    heroic_ability: []
+    gear:
+      1-2: 
+        - Staff
+        - Orbuculum
+        - Grimoire
+        - Torch
+        - Flint & Tinder
+        - D6 food rations
+        - D8 silver
+      3-4:
+        - Knife
+        - Wand
+        - Grimoire
+        - Torch
+        - Flint & tinder
+        - D6 food rations
+        - D8 silver
+      5-6:
+        - Amulet
+        - Grimoire
+        - Sleeping pelt
+        - Torch
+        - Flint & tinder
+        - D6 food rations
+        - D8 silver
+          
+  Mariner: 
+    key_attribute: AGL
+    heroic_ability:
+      - Sea Legs
+    gear:
+      1-2:
+        - Dagger
+        - Short bow
+        - Rope (hemp)
+        - Grappling hook
+        - Sleeping pelt
+        - Torch
+        - Flint & tinder
+        - D8 food rations
+        - D10 silver
+      3-4:
+        - Scimitar
+        - Leather armor
+        - Rope (hemp)
+        - Grappling hook
+        - Torch
+        - Flint & tinder
+        - D8 food rations
+        - D10 silver
+      5-6:
+        - Trident
+        - Spyglass
+        - Rope (hemp)
+        - Grappling hook
+        - Torch
+        - Flint & tinder
+        - D8 food rations
+        - D10 silver
+  Merchant: 
+    key_attribute: CHA
+    heroic_ability:
+      - Treasure Hunter
+    gear:
+      1-2:
+        - Dagger
+        - Sleeping pelt
+        - Torch
+        - Flint & tinder
+        - Rope (hemp)
+        - Donkey
+        - D6 food rations
+        - D12 silver
+      3-4:
+        - Knife
+        - Sleeping pelt
+        - Lantern
+        - Lamp oil
+        - Flint & tinder
+        - Field kitchen
+        - Donkey
+        - Cart
+        - D6 food rations
+        - D12 silver
+      5-6:
+        - Dagger
+        - Sleeping pelt
+        - Large tent
+        - Oil lamp
+        - Lamp oil
+        - Flint & tinder
+        - Backpack
+        - D6 food rations
+        - D12 silver
+  Scholar: 
+    key_attribute: INT
+    heroic_ability:
+      - Intuition
+    gear:
+      1-2:
+        - Staff
+        - Notebook
+        - Quill
+        - Sleeping pelt
+        - Torch
+        - Flint & tinder
+        - D6 food rations
+        - D10 silver
+      3-4:
+        - Knife
+        - Book (any subject)
+        - Sleeping pelt
+        - Oil lamp
+        - Lamp oil
+        - Flint & tinder
+        - D6 food rations
+        - D10 silver
+      5-6:
+        - Short sword
+        - Bandages
+        - Sleeping poision (one does)
+        - Sleeping pelt
+        - Lantern
+        - Lamp oil
+        - Flint & tinder
+        - D6 food rations
+        - D10 silver
+  Thief: 
+    key_attribute: AGL
+    heroic_ability:
+      - Backstabbing
+    gear:
+      1-2:
+        - Dagger
+        - Slink
+        - Rope (hemp)
+        - Grappling hook
+        - Torch
+        - Flint & tinder
+        - D6 food rations
+        - D10 silver
+      3-4:
+        - Knife
+        - Lockpicks (simple)
+        - Torch
+        - Flint & tinder
+        - D6 food rations
+        - D10 silver
+      5-6:
+        - Two daggers
+        - Marbles
+        - Rope (hemp)
+        - Torch
+        - Flint & tinder
+        - D6 food rations
+        - D10 silver
 
 ages:
   Young:
@@ -103,13 +519,6 @@ ages:
       INT: 1
       WIL: 1
 
-kin_movement:
-  Human: 10
-  Halfling: 8
-  Dwarf: 8
-  Elf: 10
-  Mallard: 8
-  Wolfkin: 12
 agility_movement:
   1-6: -4
   7-9: -2
@@ -126,17 +535,7 @@ base_chance:
   13-15: 6
   16-18: 7
 
-key_attribute:
-  Artisan: STR
-  Bard: CHA
-  Fighter: STR
-  Hunter: AGL
-  Knight: STR
-  Mage: WIL
-  Mariner: AGL
-  Merchant: CHA
-  Scholar: INT
-  Thief: AGL
+
 
 
 skills:
@@ -172,10 +571,19 @@ skills:
   staves: AGL
   swords: STR
 
+
 secondary_skills:
-  Animism: INT
-  Elementalism: INT
-  Mentalism: INT
+  animism: INT
+  elementalism: INT
+  mentalism: INT
+
+secondary_profession_skills:
+  Animist:
+    - animism
+  Elementalist:
+    - elementalism
+  Mentalist:
+    - mentalism
 
 profession_skills:
   Artisan:
@@ -259,30 +667,28 @@ profession_skills:
     - sleight_of_hand
     - sneaking
     - spot_hidden
-  Mage: []
-
-subprofession_skills:
-  Animist:
-    - beast_lore
-    - bushcraft
-    - evade
-    - healing
-    - hunting_and_fishing
-    - sneaking
-    - staves
-  Elementalist:
-    - awareness
-    - evade
-    - healing
-    - languages
-    - myths_and_legends
-    - spot_hidden
-    - staves
-  Mentalist:
-    - acrobatics
-    - awareness
-    - brawling
-    - evade
-    - healing
-    - languages
-    - myths_and_legends
+  Mage:
+    Animist:
+      - beast_lore
+      - bushcraft
+      - evade
+      - healing
+      - hunting_and_fishing
+      - sneaking
+      - staves
+    Elementalist:
+      - awareness
+      - evade
+      - healing
+      - languages
+      - myths_and_legends
+      - spot_hidden
+      - staves
+    Mentalist:
+      - acrobatics
+      - awareness
+      - brawling
+      - evade
+      - healing
+      - languages
+      - myths_and_legends

@@ -1,0 +1,61 @@
+---
+# Lookup tables
+damage_bonus_and_build:
+  2-64: [-2, -2]
+  65-84: [-1, -1]
+  85-124: [None, 0]
+  125-164: [+1d4, 1]
+  165-204: [+1d6, 2]
+  205-284: [+2d6, 3]
+  285-364: [+3d6, 4]
+  365-444: [+4d6, 5]
+  445-524: [+5d6, 6]
+
+
+subskills:
+  - Interpersonal:
+    - Charm
+    - Fast Talk
+    - Intimidate
+    - Persuade
+
+occupation_info:
+  Antiquarian:
+    skills:
+      - Appraise
+      - Art/Craft
+      - History
+      - Library Use
+      - Other Language
+      - Interpersonal
+      - Spot Hidden
+    credit_rating: [30,70]
+    occupation_skill_points: EDU * 4
+  Engineer:
+    occupation_skill_points: EDU * 4
+  Librarian:
+    occupation_skill_points: EDU * 4
+  Lumberjack:
+    occupation_skill_points: EDU * 2 + max(DEX * 2, STR * 2)
+
+# Random tables
+occupations:
+  - Antiquarian
+#  - Engineer
+#  - Librarian
+#  - Lumberjack
+
+
+# Personal description
+personal_description:
+  - Rugged
+  - Pretty
+  - Smart
+  - Handsome
+  - Glamorous
+  - Untidy
+  - Ungainly
+  - Baby-faced
+  - Dull
+  - Dirty
+  - Youthful

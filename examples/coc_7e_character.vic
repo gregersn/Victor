@@ -1,0 +1,96 @@
+tables = load_tables('examples/coc_7e_tables.yml')
+$.['STR', 'CON', 'DEX', 'APP', 'POW'] = roll("sum 3d6") * 5
+$.['SIZ', 'INT', 'EDU'] = roll("sum 2d6 + 6") * 5
+
+$.Age = random(15, 89)
+
+# If age is between 15 and 19
+if $.Age >= 15 and $.Age <= 19:
+a, b = distribute(5, 2)
+$.STR -= a
+$.SIZ -= b
+$.EDU -= 5
+$.Luck = roll("(max 2 # sum 3d6) * 5")
+endif
+
+# If age is between 20 and 39
+if $.Age >= 20 and $.Age <= 39:
+$.EDU += roll("d10") if roll("d100") > $.EDU else 0
+endif
+
+# If age is between 40 to 49
+if $.Age >= 40 and $.Age <= 49:
+repeat $.EDU += roll("d10") if roll("d100") > $.EDU else 0 times 2
+a, b, c = distribute(5, 3)
+$.STR -= a
+$.CON -= b
+$.DEX -= c
+$.APP -= 5
+endif
+
+if $.Age >=50 and $.Age <= 59:
+repeat $.EDU += roll("d10") if roll("d100") > $.EDU else 0 times 3
+str, con, dex = distribute(10, 3)
+$.STR -= str
+$.CON -= con
+$.DEX -= dex
+$.APP -= 10
+endif
+
+if $.Age >= 60 and $.Age <= 69:
+repeat $.EDU += roll("d10") if roll("d100") > $.EDU else 0 times 4
+str, con, dex = distribute(20, 3)
+$.STR -= str
+$.CON -= con
+$.DEX -= dex
+$.APP -= 15
+endif
+
+if $.Age >= 70 and $.Age <= 79:
+repeat $.EDU += roll("d10") if roll("d100") > $.EDU else 0 times 4
+str, con, dex = distribute(40, 3)
+$.STR -= str
+$.CON -= con
+$.DEX -= dex
+$.APP -= 20
+endif
+
+if $.Age >= 80 and $.Age <= 89:
+repeat $.EDU += roll("d10") if roll("d100") > $.EDU else 0 times 4
+str, con, dex = distribute(80, 3)
+$.STR -= str
+$.CON -= con
+$.DEX -= dex
+$.APP -= 25
+endif
+
+$.Luck ?= roll("(sum 3d6) * 5")
+
+$.Damage_bonus, $.Build = ranged_table(tables.damage_bonus_and_build, $.STR + $.SIZ)
+$.Hit_Points = ($.CON + $.SIZ) / 10
+
+$.MOV ?= 9 if $.DEX > $.SIZ and $.STR > $.SIZ
+$.MOV ?= 8 if $.DEX >= $.SIZ or $.STR >= $.SIZ
+$.MOV ?= 7 if $.DEX < $.SIZ and $.STR < $.SIZ
+
+$.MOV -= 1 if $.Age >= 40 else 0
+$.MOV -= 1 if $.Age >= 50 else 0
+$.MOV -= 1 if $.Age >= 60 else 0
+$.MOV -= 1 if $.Age >= 70 else 0
+$.MOV -= 1 if $.Age >= 80 else 0
+
+
+$.Occupation = random_table(tables.occupations)
+occupation_info = table_lookup(tables.occupation_info, $.Occupation)
+$.occupation_skills = occupation_info.skills
+occupation_skill_points = evaluate(occupation_info.occupation_skill_points)
+
+lower, upper = occupation_info.credit_rating
+$.credit_rating = random(lower, upper)
+
+occupation_skill_points -= $.credit_rating
+assign(distribute(occupation_skill_points, len(occupation_info.skills)), occupation_info.skills)
+
+# TODO: Personal interest skills
+
+$.Personal_Description = random_table(tables.personal_description, 3)

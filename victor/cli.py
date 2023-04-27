@@ -43,8 +43,10 @@ def create(filename: str, average: bool = False, fill: Optional[str] = None,
         fill_sheet(fill, character, output)
     else:
         for key, value in character.items():
+            if value is None:
+                continue
             if isinstance(value, list):
-                print(f"{key}: {', '.join(value)}")
+                print(f"{key}: {', '.join([str(v) for v in value])}")
                 continue
             if isinstance(value, dict):
                 print(f"{key}:")

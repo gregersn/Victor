@@ -1,12 +1,19 @@
 """Victor's guide to creation."""
 import math
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 import random
 from ringneck import run
 from trill import trill
 import yaml
+import sys
 
 Tables = Union[List[Any], Dict[Union[int, str], Any]]
+
+seed = random.randrange(sys.maxsize)
+# seed = 6142246949006077372
+random.seed(seed)
+
+# print(seed)
 
 
 def pick_from_random_table(table: Tables, count: int = 1) -> Any:
@@ -71,7 +78,7 @@ def table_lookup(table: Tables, key: Any) -> Any:
 
 def roll(definition: str) -> Union[List[int], int, str]:
     """Roll dice expressed with Troll."""
-    res = trill(definition)
+    res = trill(definition, random.randrange(sys.maxsize))
     return res[0][0]
 
 
@@ -112,6 +119,33 @@ def apply_modifiers(modifiers: Dict[str, int]):
         globals[key] += value
 
 
+def rand(a: int, b: Optional[int] = None):
+    if b is None:
+        b = a
+        a = 0
+    return random.randrange(a, b)
+
+
+def distribute(points: int, bin_count: int):
+    bins = [0,] * bin_count
+
+    for _ in range(points):
+        bins[random.randint(0, bin_count - 1)] += 1
+
+    return tuple(bins)
+
+
+def evaluate(expression: str):
+    result = run(expression, builtins={**globals, 'max': max})
+
+    return result[-1]
+
+
+def assign(values: List[Any], variables: List[str]):
+    for var, value in zip(variables, values):
+        globals[var] = value
+
+
 def get_interpreter(program: str, global_values: Dict[str, Any]) -> Any:
     """Return an interpreter for Victor."""
     builtins: Dict[str, Callable[..., Any]] = {
@@ -120,11 +154,18 @@ def get_interpreter(program: str, global_values: Dict[str, Any]) -> Any:
         'table_lookup': table_lookup,
         'load_tables': load_tables,
         'ranged_table': ranged_table_lookup,
+        'min': min,
         'max': max,
         'swap': swap,
         'swap_largest': swap_largest,
         'apply_modifiers': apply_modifiers,
-        'print': print
+        'print': print,
+        'round_up': lambda x: int(math.ceil(x)),
+        'random': rand,
+        'distribute': distribute,
+        'evaluate': evaluate,
+        'len': len,
+        'assign': assign,
 
     }
     return run(program, builtins=builtins, global_variables=global_values)

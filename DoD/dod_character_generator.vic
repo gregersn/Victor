@@ -1,34 +1,44 @@
 # Load in a file containing all the tables
 tables = load_tables('./DoD/dod_tables.yml')
-# Pick Kin
-$.kin = random_table(tables.kin)
-# Get the abilities provided by kin
-$.abilities = table_lookup(tables.abilities, $.kin)
 
-# Choose profession
+# 1. Roll kin
+$.kin = random_table(tables.kin)
+
+kin_info = table_lookup(tables.kin_info, $.kin)
+
+# 2. Note innate ability
+$.abilities = kin_info.abilities
+
+# 3. Roll profession
 $.profession = random_table(tables.profession)
 
 # Get a subprofession (will happen if Mage)
-$.subprofession = random_table(table_lookup(tables.subprofession, $.profession)) 
+$.subprofession = random_table(table_lookup(tables.profession_info.get($.profession), 'subprofession'))
 
-# Random age
+profession_info = table_lookup(tables.profession_info, $.profession)
+
+# 4. Roll age
 $.age = random_table(tables.age)
 
-# Random name, based on Kin
+# 5. Roll name, based on kin
 $.name = random_table(tables.name.get($.kin))
 
-# Roll attributes
+# 6. Roll attributes
 $.['STR', 'CON', 'AGL', 'INT', 'WIL', 'CHA'] = roll("sum largest 3 4d6")
 
 # Swap the largest attribute with the key attribute for profession
-swap_largest(['STR', 'CON', 'AGL', 'INT', 'WIL', 'CHA'], table_lookup(tables.key_attribute, $.profession))
+swap_largest(['STR', 'CON', 'AGL', 'INT', 'WIL', 'CHA'], table_lookup(tables.profession_info.get($.profession), 'key_attribute'))
+
+# 7. Calculate derived ratings
 
 # Look up movement from table
-$.movement = table_lookup(tables.kin_movement, $.kin) + ranged_table(tables.agility_movement, $.AGL)
+$.movement = kin_info.movement + ranged_table(tables.agility_movement, $.AGL)
 
 # Get and modify attributes based on age
 age_info = table_lookup(tables.ages, $.age)
 apply_modifiers(age_info.attributes)
+
+$.['STR', 'CON', 'AGL', 'INT', 'WIL', 'CHA'] = min($.get(%), 18)
 
 # Set misc derived values
 $.damage_bonus_strength = ranged_table(tables.damage_bonus, $.STR)
@@ -36,19 +46,42 @@ $.damage_bonus_agility = ranged_table(tables.damage_bonus, $.AGL)
 $.hit_points = $.CON
 $.willpower_points = $.WIL
 
-# Total number of skills to choose
-trained_skills = 6 + age_info.skills
-trained_skills = trained_skills - 1 if $.profession == "Mage" else trained_skills
-available_profession_skills = table_lookup(tables.profession_skills, $.profession)
-chosen_profession_skills = random_table(available_profession_skills, 6)
+# 8. Choose trained skills
 
-$.secondary_skills = {}
+# Total number of skills to choose
+profession_skills = (5 if $.profession == "Mage" else 6)
+trained_skills = profession_skills + age_info.skills
+available_profession_skills = tables.profession_skills.get($.profession) if $.profession != "Mage" else table_lookup(tables.profession_skills.get($.profession), $.subprofession)
+chosen_profession_skills = random_table(available_profession_skills, profession_skills)
+
 remaining_available_skills = tables.skills.keys() - chosen_profession_skills
-trained_skills = trained_skills - 6
+trained_skills = trained_skills - profession_skills
 chosen_skills = chosen_profession_skills + random_table(remaining_available_skills, trained_skills)
 
-# Set all skill sto base value
-# $.[*tables.skills.keys()] = ranged_table(tables.base_chance, $.get(tables.skills.get(%)))
+chosen_secondary_skills = table_lookup(tables.secondary_profession_skills, $.subprofession) if $.profession == "Mage" else []
+$.secondary_skills = {}
+$.secondary_skills.[*chosen_secondary_skills] = ranged_table(tables.base_chance, $.get(tables.secondary_skills.get(%))) * 2
+
+# Set all skill to base value
+$.[*tables.skills.keys()] = ranged_table(tables.base_chance, $.get(tables.skills.get(% )))
 
 # Set chosen skills to double value
-# $.[*chosen_skills] = ranged_table(tables.base_chance, $.get(tables.skills.get(%))) * 2
+$.[*chosen_skills] = ranged_table(tables.base_chance, $.get(tables.skills.get(% ))) * 2
+
+# 9. Note heroic ability
+$.abilities.append(random_table(table_lookup(tables.profession_info.get($.profession), 'heroic_ability'))) if $.profession != "Mage"
+
+# 10. Roll weakness (optional)
+$.weakness = random_table(tables.weakness)
+
+# 11. Roll gear
+# TODO: This needs special handling for Artisan (and possibly other professions)
+
+$.encumbrance_limit = round_up($.STR / 2)
+$.inventory = random_table(profession_info.gear)
+
+# 12. Roll memento (optional)
+$.memento = random_table(tables.memento)
+
+# 13. Roll appearance
+$.appearance = random_table(tables.appearance, 2)
