@@ -5,15 +5,15 @@ A character/monster generator for TTPRGs.
 ## Introduction
 
 Victor makes monsters as instructed.  
-By giving Victor a markdown file that contains instructions for how stats should be calculated, creations will come alive.
+By giving Victor a ".vic"-file that contains instructions for how stats should be calculated, creations will come alive.
 
-As an example of how these are defined, you can look in the examples folder, for how Guff is defined.
+As an example of how these are defined, you can look in the examples folder
 
-To have Victor make a Guff, you simply run the command
+To have Victor make a Tiny d10 character, you simply run the command
 
-`$ victor ./examples/guff.md`
+`$ victor create ./examples/tinyd10_character.vic`
 
-Which will print out information about the generated Guff in Markdown.
+Which will print out information about the generated character.
 
 ## Usage and options
 
