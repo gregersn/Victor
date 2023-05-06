@@ -1,0 +1,48 @@
+---
+# Random tables
+race:
+  - Dwarf
+  - Elf
+  - Halfling
+  - Human
+
+class:
+  - Cleric
+  - Rogue
+  - Warrior
+  - Wizard
+
+magic_points:
+  1-5: 4
+  6-9: 5
+  10: 6
+
+# Info tables
+
+race_info:
+  Dwarf:
+    hit_points: 1
+  Elf:
+    intellect: 1
+  Halfling:
+    power_points: 1
+  Human:
+    aspect: 1
+
+class_info:
+  Cleric:
+    toughness: 6
+    magic_points: 1
+    power_points: 2
+  Rogue:
+    toughness: 6
+    hit_points: 1
+    power_points: 2
+  Warrior:
+    toughness: 7
+    hit_points: 2
+    power_points: 1
+  Wizard:
+    toughness: 5
+    magic_points: 3
+

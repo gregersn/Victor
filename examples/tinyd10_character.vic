@@ -1,0 +1,19 @@
+# Partial Tiny d10 character generator based on rules from:
+# https://td10.org/Rules/Ultra-Light+Edition/Fantasy+Rules
+tables = load_tables("tinyd10_character.yml")
+
+$.race = random_table(tables.race)
+$.class = random_table(tables.class)
+
+$.aspect, $.intellect, $.power, $.reflex = distribute(3, 4)
+$.hit_points, $.power_points = distribute(10, 2)
+
+if ($.class == "Cleric") or ($.class == "Wizard"):
+$.magic_points = random_table(tables.magic_points)
+endif
+
+apply_modifiers(table_lookup(tables.race_info, $.race))
+apply_modifiers(table_lookup(tables.class_info, $.class))
+
+$.wealth = {}
+$.wealth.['gp', 'sp', 'cp'] = roll("d10 * 10")
