@@ -10,7 +10,9 @@ setup(
         'Click',
         'PyMuPDF',
         'pyaml',
-        'PySimpleGUI'
+        'PySimpleGUI',
+        'trill',
+        'ringneck'
     ],
     entry_points={
         'console_scripts': [
