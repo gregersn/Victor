@@ -53,8 +53,8 @@ def start_gui(*args: List[Any], **kwargs: Dict[str, Any]):
             break
 
         if isinstance(values, dict):
-            input_program: str = values['input']      
-            result_data = {}      
+            input_program: str = values['input']
+            result_data = {}
 
             if event == 'Roll':
                 interpreter = get_interpreter(input_program, result_data)

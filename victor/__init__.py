@@ -20,7 +20,8 @@ def generate(filename: Union[Path, str], average: bool = False) -> Dict[str, Any
         program = f.read()
 
     state: Dict[str, Any] = {}
-    interpreter = get_interpreter(program, state)
+    interpreter = get_interpreter(
+        program, state, basedir=filename.absolute().parent)
 
     return state
 

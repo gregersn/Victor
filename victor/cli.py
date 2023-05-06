@@ -1,16 +1,24 @@
 #!/usr/bin/env python3
+"""Victor initiator script."""
+from pathlib import Path
+from typing import Optional
+
 import click
+
 from victor import generate
 from victor import fill_sheet, fill_pdf
-from typing import Optional
 
 
 @click.group(invoke_without_command=True)
 @click.pass_context
 def cli(ctx: click.Context):
+    """Handle non-command."""
     if ctx.invoked_subcommand is None:
-        from victor.gui import start_gui
-        start_gui()
+        try:
+            from victor.gui import start_gui
+            start_gui()
+        except ImportError as exc:
+            print(f"Could not import GUI libs: {exc}")
 
 
 @cli.command()
@@ -28,7 +36,7 @@ def fill(charactersheet: str, datafile: str, output: str = "output.pdf"):
 
 
 @cli.command()
-@click.argument('filename', type=click.Path(exists=True))
+@click.argument('filename', type=click.Path(path_type=Path, exists=True))
 @click.option('--average/--no-average', default=False, required=False,
               help="Output the average values instead of random.")
 @click.option('--fill', type=click.Path(exists=True), required=False,

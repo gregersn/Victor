@@ -62,11 +62,12 @@ chosen_secondary_skills = table_lookup(tables.secondary_profession_skills, $.sub
 $.secondary_skills = {}
 $.secondary_skills.[*chosen_secondary_skills] = ranged_table(tables.base_chance, $.get(tables.secondary_skills.get(%))) * 2
 
+$.skills = {}
 # Set all skill to base value
-$.[*tables.skills.keys()] = ranged_table(tables.base_chance, $.get(tables.skills.get(% )))
+$.skills.[*tables.skills.keys()] = ranged_table(tables.base_chance, $.get(tables.skills.get(% )))
 
 # Set chosen skills to double value
-$.[*chosen_skills] = ranged_table(tables.base_chance, $.get(tables.skills.get(% ))) * 2
+$.skills.[*chosen_skills] = ranged_table(tables.base_chance, $.get(tables.skills.get(% ))) * 2
 
 # 9. Note heroic ability
 $.abilities.append(random_table(table_lookup(tables.profession_info.get($.profession), 'heroic_ability'))) if $.profession != "Mage"

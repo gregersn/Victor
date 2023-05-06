@@ -1,19 +1,19 @@
 """Victor's guide to creation."""
+import sys
 import math
+import yaml
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Union
 import random
+
 from ringneck import run
 from trill import trill
-import yaml
-import sys
 
 Tables = Union[List[Any], Dict[Union[int, str], Any]]
 
 seed = random.randrange(sys.maxsize)
 # seed = 6142246949006077372
 random.seed(seed)
-
-# print(seed)
 
 
 def pick_from_random_table(table: Tables, count: int = 1) -> Any:
@@ -47,6 +47,14 @@ def pick_from_random_table(table: Tables, count: int = 1) -> Any:
     if count == 1 and result:
         return result[0]
     return result
+
+
+def nested_random_table(table: Tables) -> Any:
+    res = pick_from_random_table(table)
+    while isinstance(res,  list):
+        res = pick_from_random_table(res)
+
+    return res
 
 
 def ranged_table_lookup(table: Tables, lookup_value: int):
@@ -95,12 +103,11 @@ def load_tables(filename: str):
 
 def swap(left: Any, right: Any):
     """Swap two values."""
-    print(left)
-    print(right)
     return right, left
 
 
 def swap_largest(candidates: Any, target: str):
+    """Swap the largest value in candidates with target."""
     largest_value = -math.inf
     largest_key = None
     for candidate in candidates:
@@ -115,11 +122,13 @@ def swap_largest(candidates: Any, target: str):
 
 
 def apply_modifiers(modifiers: Dict[str, int]):
+    """Add values in modifiers to global variables."""
     for key, value in modifiers.items():
         globals[key] += value
 
 
 def rand(a: int, b: Optional[int] = None):
+    """Return a random integer."""
     if b is None:
         b = a
         a = 0
@@ -127,6 +136,7 @@ def rand(a: int, b: Optional[int] = None):
 
 
 def distribute(points: int, bin_count: int):
+    """Randomly distribute points among bins."""
     bins = [0,] * bin_count
 
     for _ in range(points):
@@ -136,24 +146,22 @@ def distribute(points: int, bin_count: int):
 
 
 def evaluate(expression: str):
+    """Evaluate expression."""
     result = run(expression, builtins={**globals, 'max': max})
 
-    return result[-1]
+    return result[-1] if result is not None else None
 
 
 def assign(values: List[Any], variables: List[str]):
+    """Assign values to variable names."""
     for var, value in zip(variables, values):
         globals[var] = value
 
 
-def get_interpreter(program: str, global_values: Dict[str, Any]) -> Any:
+def get_interpreter(program: str, global_values: Dict[str, Any], basedir: Path) -> Any:
     """Return an interpreter for Victor."""
     builtins: Dict[str, Callable[..., Any]] = {
         'roll': roll,
-        'random_table': pick_from_random_table,
-        'table_lookup': table_lookup,
-        'load_tables': load_tables,
-        'ranged_table': ranged_table_lookup,
         'min': min,
         'max': max,
         'swap': swap,
@@ -166,6 +174,11 @@ def get_interpreter(program: str, global_values: Dict[str, Any]) -> Any:
         'evaluate': evaluate,
         'len': len,
         'assign': assign,
+        'load_tables': lambda x: load_tables(basedir / x),
+        'random_table': pick_from_random_table,
+        'nested_random_table': nested_random_table,
+        'ranged_table': ranged_table_lookup,
+        'table_lookup': table_lookup,
 
     }
     return run(program, builtins=builtins, global_variables=global_values)
