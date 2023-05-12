@@ -51,7 +51,7 @@ def pick_from_random_table(table: Tables, count: int = 1) -> Any:
 
 def nested_random_table(table: Tables) -> Any:
     res = pick_from_random_table(table)
-    while isinstance(res,  list):
+    while isinstance(res, list):
         res = pick_from_random_table(res)
 
     return res
@@ -84,9 +84,9 @@ def table_lookup(table: Tables, key: Any) -> Any:
     return table[key]
 
 
-def roll(definition: str) -> Union[List[int], int, str]:
+def roll(definition: str, average: bool = False) -> Union[List[int], int, str]:
     """Roll dice expressed with Troll."""
-    res = trill(definition, random.randrange(sys.maxsize))
+    res = trill(definition, random.randrange(sys.maxsize), average=average)
     return res[0][0]
 
 
@@ -130,17 +130,27 @@ def apply_modifiers(modifiers: Dict[str, int]):
             globals[key] += value
 
 
-def rand(a: int, b: Optional[int] = None):
+def rand(a: int, b: Optional[int] = None, average: bool = False):
     """Return a random integer."""
     if b is None:
         b = a
         a = 0
+
+    if average:
+        return (b - a) / 2
+
     return random.randrange(a, b)
 
 
-def distribute(points: int, bin_count: int):
+def distribute(points: int, bin_count: int, average: bool = False):
     """Randomly distribute points among bins."""
-    bins = [0,] * bin_count
+
+    if average:
+        return (points / bin_count, ) * bin_count
+
+    bins = [
+        0,
+    ] * bin_count
 
     for _ in range(points):
         bins[random.randint(0, bin_count - 1)] += 1
@@ -161,10 +171,15 @@ def assign(values: List[Any], variables: List[str]):
         globals[var] = value
 
 
-def get_interpreter(program: str, global_values: Dict[str, Any], basedir: Path) -> Any:
+def get_interpreter(
+    program: str,
+    global_values: Dict[str, Any],
+    basedir: Path,
+    average: bool = False,
+) -> Any:
     """Return an interpreter for Victor."""
     builtins: Dict[str, Callable[..., Any]] = {
-        'roll': roll,
+        'roll': lambda x: roll(x, average=average),
         'min': min,
         'max': max,
         'swap': swap,
@@ -172,8 +187,9 @@ def get_interpreter(program: str, global_values: Dict[str, Any], basedir: Path) 
         'apply_modifiers': apply_modifiers,
         'print': print,
         'round_up': lambda x: int(math.ceil(x)),
-        'random': rand,
-        'distribute': distribute,
+        'round_down': lambda x: int(math.floor(x)),
+        'random': lambda x, y = None: rand(x, y, average=average),
+        'distribute': lambda x, y: distribute(x, y, average=average),
         'evaluate': evaluate,
         'len': len,
         'assign': assign,
@@ -182,6 +198,5 @@ def get_interpreter(program: str, global_values: Dict[str, Any], basedir: Path) 
         'nested_random_table': nested_random_table,
         'ranged_table': ranged_table_lookup,
         'table_lookup': table_lookup,
-
     }
     return run(program, builtins=builtins, global_variables=global_values)
