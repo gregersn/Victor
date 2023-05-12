@@ -7,6 +7,8 @@ import click
 
 from victor import generate
 from victor import fill_sheet, fill_pdf
+from victor import error
+from victor.render.utils import result2string
 
 
 @click.group(invoke_without_command=True)
@@ -19,13 +21,13 @@ def cli(ctx: click.Context):
             start_gui()
         except ImportError as exc:
             print(f"Could not import GUI libs: {exc}")
+            print(error.missing_tk_inter())
 
 
 @cli.command()
 @click.argument('charactersheet', type=click.Path(exists=True))
 @click.argument('datafile', type=click.Path(exists=True))
-@click.option('--output', type=click.Path(), required=False,
-              help="Destination file")
+@click.option('--output', type=click.Path(), required=False, help="Destination file")
 def fill(charactersheet: str, datafile: str, output: str = "output.pdf"):
     """Fill CHARACTERSHEET with DATA
 
@@ -46,18 +48,7 @@ def create(filename: str, average: bool = False, fill: Optional[str] = None, out
     if fill is not None:
         fill_sheet(fill, character, output)
     else:
-        for key, value in character.items():
-            if value is None:
-                continue
-            if isinstance(value, list):
-                print(f"{key}: {', '.join([str(v) for v in value])}")
-                continue
-            if isinstance(value, dict):
-                print(f"{key}:")
-                for key, v in value.items():
-                    print(f"- {key}: {v}")
-                continue
-            print(f"{key}: {value}")
+        print(result2string(character))
 
 
 if __name__ == '__main__':

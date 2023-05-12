@@ -1,10 +1,6 @@
-from re import A
 from typing import Any, Dict, Union
 from pathlib import Path
 from victor.interpreter import get_interpreter
-
-from victor.reader import load_rules
-
 from victor.render import fill_pdf
 from victor.character import Character
 
@@ -25,7 +21,9 @@ def generate(filename: Union[Path, str], average: bool = False) -> Dict[str, Any
     return state
 
 
-def fill_sheet(filename: Union[Path, str],
-               character: Character,
-               output: Union[Path, str, None]) -> None:
+def fill_sheet(
+    filename: Union[Path, str],
+    character: Character,
+    output: Union[Path, str, None],
+) -> None:
     fill_pdf(filename, character.variables, output)
