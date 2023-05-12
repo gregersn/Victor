@@ -1,95 +1,112 @@
-from typing import List, Dict, Any, Union
-import PySimpleGUI as sg
+"""Victor GUI."""
+import os
+from typing import List, Dict, Any, Tuple, Union, cast
 from pathlib import Path
+import PySimpleGUI as sg
 
 from victor.interpreter import get_interpreter
-
+from victor.render.utils import result2string
 
 DEFAULT_PROGRAM = """name = ['Wolfgang', 'Amadeus', 'Beethoven']
 
 $.STR = roll('sum 3D6')
 $.DEX = roll('sum 3D6')
 $.INT = roll('sum 3D6')
-$.HP = ($.DEX + $.STR) / 10 + 1
-$.NAME = random_choice(name)
+$.HP = round_up(($.DEX + $.STR) / 10 + 1)
+$.NAME = random_table(name)
 """
-
-MENU_DEF = [['&File', ['&Open', '&Save', 'Save &As...', 'E&xit']]]
 
 current_file: Union[None, Path] = None
 
 
 def start_gui(*args: List[Any], **kwargs: Dict[str, Any]):
+    """Run Victor GUI."""
     global current_file
     # sg.theme('DarkAmber')
 
+    # Create the menu definition.
+    MENU_DEFINITION = [['&File', ['&Open', '&Save', 'Save &As...', 'E&xit']]]
+
+    # Specify the layout of the Window
     layout = [
-        [sg.Menu(MENU_DEF)],
+        [sg.Menu(MENU_DEFINITION)],
         [sg.Text("Input")],
-        [sg.Multiline(DEFAULT_PROGRAM,
-                      key="input", size=(40, 12), expand_x=True, expand_y=True)],
+        [sg.Multiline(DEFAULT_PROGRAM, key="-INPUT-",
+                      size=(40, 12), expand_x=True, expand_y=True)],
         [sg.Text("Output")],
-        [sg.Multiline(key="output", size=(40, 12),
+        [sg.Multiline(key="-OUTPUT-", size=(40, 12),
                       expand_x=True, expand_y=True)],
         [sg.Button("Roll"), sg.Button("Average")],
     ]
 
     window = sg.Window("Victor", layout, resizable=True)
-    input_program = ''
+    input_program = DEFAULT_PROGRAM
 
     running = True
 
     while running:
-        window_data = window.read()
+        window_data = cast(None | Tuple[str, Dict[Any, Any]], window.read())
 
-        if window_data is None:
+        if not isinstance(window_data, tuple):
             continue
 
         event, values = window_data
 
-        if event == sg.WIN_CLOSED or event == 'Exit':
+        if event in [sg.WIN_CLOSED, 'Exit']:
             # Exit event by breaking out of loop.
             running = False
-            break
 
-        if isinstance(values, dict):
-            input_program: str = values['input']
-            result_data = {}
-
-            if event == 'Roll':
-                interpreter = get_interpreter(input_program, result_data)
-
-            elif event == 'Average':
-                raise NotImplementedError
-                interpreter.interpret(average=True)
-            output: sg.Element = window['output']
-            output_string = "\n".join(
-                [f"{k}: {v}" for k, v in result_data.items()])
-            output.Update(value=output_string)
-
-        if event == 'Open':
-            filename: Union[str, None] = sg.popup_get_file(
-                "Open definition file.", no_window=True)
-            if filename is None:
-                continue
-            with open(filename, 'r') as f:
-                inp: sg.Element = window.Element('input')
-                inp.Update(f.read())
-            current_file = Path(filename)
-            continue
-
-        elif (event == 'Save' and current_file is not None):
-            with open(current_file, 'w') as f:
-                f.write(input_program)
-
-        elif event == 'Save As...' or (event == 'Save' and current_file is None):
-            filename = sg.popup_get_file(
-                "Save definition file.", save_as=True, no_window=True)
-
+        # Menu command events
+        elif event == 'Open':
+            filename = cast(
+                None | str,
+                sg.popup_get_file("Open Victor file.",
+                                  file_types=(
+                                      ('Victor files', '*.vic'),
+                                      ('All files', '*.* *'),
+                                  ),
+                                  no_window=True,
+                                  history=True))
             if filename:
                 current_file = Path(filename)
 
-                with open(current_file, 'w') as f:
-                    f.write(input_program)
+                with open(current_file, 'r', encoding="utf8") as file_handle:
+                    inp: sg.Multiline = cast(
+                        sg.Multiline, window.Element('-INPUT-'))
+                    inp.Update(file_handle.read())
+
+            continue
+
+        elif (event == 'Save' and current_file is not None):
+            with open(current_file, 'w', encoding="utf8") as file_handle:
+                file_handle.write(input_program)
+
+        elif event == 'Save As...' or (event == 'Save' and current_file is None):
+            filename = cast(None | str, sg.popup_get_file(
+                "Save definition file.", save_as=True, no_window=True))
+            if filename:
+                current_file = Path(filename)
+
+                with open(current_file, 'w', encoding="utf8") as file_handle:
+                    file_handle.write(input_program)
+
+        elif event in ['Roll', 'Average']:
+            input_program: str = values['-INPUT-']
+            assert isinstance(input_program, str)
+            result_data = {}
+
+            average = event == 'Average'
+
+            get_interpreter(input_program,
+                            result_data,
+                            current_file.parent if current_file is not None else Path(
+                                os.getcwd()),
+                            average=average)
+
+            output = cast(sg.Multiline, window['-OUTPUT-'])
+            output_string = result2string(result_data)
+            output.Update(value=output_string)
+        else:
+            raise NotImplementedError(event)
 
     window.close()
