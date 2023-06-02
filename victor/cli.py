@@ -17,7 +17,7 @@ def cli(ctx: click.Context):
     """Handle non-command."""
     if ctx.invoked_subcommand is None:
         try:
-            from victor.gui import start_gui
+            from victor.gui import start_gui  # pylint: disable=C0415
             start_gui()
         except ImportError as exc:
             print(f"Could not import GUI libs: {exc}")
@@ -27,7 +27,8 @@ def cli(ctx: click.Context):
 @cli.command()
 @click.argument('charactersheet', type=click.Path(exists=True))
 @click.argument('datafile', type=click.Path(exists=True))
-@click.option('--output', type=click.Path(), required=False, help="Destination file")
+@click.option('--output', type=click.Path(),
+              required=False, help="Destination file")
 def fill(charactersheet: str, datafile: str, output: str = "output.pdf"):
     """Fill CHARACTERSHEET with DATA
 
@@ -39,17 +40,22 @@ def fill(charactersheet: str, datafile: str, output: str = "output.pdf"):
 
 @cli.command()
 @click.argument('filename', type=click.Path(path_type=Path, exists=True))
-@click.option('--average/--no-average', default=False, required=False, help="Output the average values instead of random.")
-@click.option('--fill', type=click.Path(exists=True), required=False, help="Template to fill with generated data.")
-@click.option('--output', type=click.Path(), required=False, help="Where to save filled template.")
-def create(filename: str, average: bool = False, fill: Optional[str] = None, output: Optional[str] = None):
-    character = generate(filename, average=average)
+@click.option('--average/--no-average', default=False, required=False,
+              help="Output the average values instead of random.")
+@click.option('--fill', type=click.Path(exists=True), required=False,
+              help="Template to fill with generated data.")
+@click.option('--output', type=click.Path(), required=False,
+              help="Where to save filled template.")
+def create(filename: str, average: bool = False, fill: Optional[str] = None,
+           output: Optional[str] = None):
+    """Create a sheet or character."""
+    result = generate(filename, average=average)
 
     if fill is not None:
-        fill_sheet(fill, character, output)
+        print(fill_sheet(fill, result, output))
     else:
-        print(result2string(character))
+        print(result2string(result))
 
 
 if __name__ == '__main__':
-    cli()
+    cli()  # pylint: disable=e1120

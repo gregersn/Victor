@@ -11,6 +11,7 @@ setup(
         'PyMuPDF',
         'pyaml',
         'PySimpleGUI',
+        'Jinja2',
         'trill',
         'ringneck'
     ],

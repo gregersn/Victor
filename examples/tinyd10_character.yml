@@ -22,12 +22,26 @@ magic_points:
 race_info:
   Dwarf:
     hit_points: 1
+    racial_bonus:
+      - +1 damage against goblins
+      - +1 hp per level
+    skills:
+      - craft
   Elf:
     intellect: 1
+    racial_bonus:
+      - +1 damage against evil creatures
   Halfling:
     power_points: 1
+    racial_bonus:
+      - +1 power point per level
+      - -1 to ranged attack against the halfling
   Human:
     aspect: 1
+    racial_bonus:
+      - +1 attack bonus against natural beasts
+    skills:
+      - persuade
 
 class_info:
   Cleric:

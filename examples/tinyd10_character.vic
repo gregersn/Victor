@@ -1,5 +1,5 @@
 # Partial Tiny d10 character generator based on rules from:
-# https://td10.org/Rules/Ultra-Light+Edition/Fantasy+Rules
+# https://td10.org/Fantasy/Rules/Ultra-Light+Rules
 tables = load_tables("tinyd10_character.yml")
 
 $.race = random_table(tables.race)

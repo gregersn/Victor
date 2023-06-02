@@ -1,10 +1,11 @@
 """Victor's guide to creation."""
 import sys
 import math
-import yaml
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Union
 import random
+
+import yaml
 
 from ringneck import run
 from trill import trill
