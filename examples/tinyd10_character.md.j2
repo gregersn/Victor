@@ -1,0 +1,25 @@
+# Character
+
+Race: {{ race }}
+
+Racial bonus: {% for bonus in racial_bonus %}
+- {{ bonus }}{% endfor %}
+
+Class: {{ class }}  
+
+## Attributes
+
+Aspect: {{ aspect }}
+Intellect: {{ intellect }}
+Power: {{ power }}
+Reflex: {{ reflex }}
+
+Hit points: {{ hit_points }}
+Power points: {{ power_points }}
+Magic points: {{ magic_points or 0 }}
+
+## Wealth
+
+GP | SP | CP
+---|----|----
+{{ wealth.gp }} | {{ wealth.sp }} | {{ wealth.cp }}

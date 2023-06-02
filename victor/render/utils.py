@@ -1,7 +1,12 @@
-from typing import Any, Dict, List
+"""Output utilities."""
+from typing import Dict, List
 
 
-def result2string(result: Dict[str, Any]):
+BaseResultType = str | int | float | None
+ResultType = BaseResultType | List[BaseResultType] | Dict[str, 'ResultType']
+
+
+def result2string(result: Dict[str, ResultType]):
     """Convert a generator result to string."""
     output: List[str] = []
     for key, value in result.items():
@@ -12,8 +17,8 @@ def result2string(result: Dict[str, Any]):
             continue
         if isinstance(value, dict):
             output.append(f"{key}:")
-            for key, v in value.items():
-                output.append(f"- {key}: {v}")
+            for subkey, subvalue in value.items():
+                output.append(f"- {subkey}: {subvalue}")
             continue
         output.append(f"{key}: {value}")
 
