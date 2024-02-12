@@ -10,7 +10,7 @@ setup(
         "Click",
         "PyMuPDF",
         "pyaml",
-        "PySimpleGUI==4.60.5",
+        "PySimpleGUI==5.0.0",
         "trill",
         "ringneck",
     ],
