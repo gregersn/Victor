@@ -1,7 +1,7 @@
 Click
 PyMuPDF
 pyaml
-PySimpleGUI
+PySimpleGUI==4.60.5
 trill
 ringneck
 

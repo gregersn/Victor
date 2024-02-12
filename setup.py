@@ -7,16 +7,12 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'Click',
-        'PyMuPDF',
-        'pyaml',
-        'PySimpleGUI',
-        'trill',
-        'ringneck'
+        "Click",
+        "PyMuPDF",
+        "pyaml",
+        "PySimpleGUI==4.60.5",
+        "trill",
+        "ringneck",
     ],
-    entry_points={
-        'console_scripts': [
-            'victor = victor.cli:cli'
-        ]
-    }
+    entry_points={"console_scripts": ["victor = victor.cli:cli"]},
 )
