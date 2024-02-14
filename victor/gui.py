@@ -1,9 +1,9 @@
 """Victor GUI."""
 import os
-from typing import List, Dict, Any, Tuple, Union, cast
+from typing import List, Dict, Any, Union
 from pathlib import Path
-import PySimpleGUI as sg
-
+import tkinter as tk
+import customtkinter as ctk
 from victor.interpreter import get_interpreter
 from victor.render.utils import result2string
 
@@ -22,91 +22,90 @@ current_file: Union[None, Path] = None
 def start_gui(*args: List[Any], **kwargs: Dict[str, Any]):
     """Run Victor GUI."""
     global current_file
-    # sg.theme('DarkAmber')
 
-    # Create the menu definition.
-    MENU_DEFINITION = [['&File', ['&Open', '&Save', 'Save &As...', 'E&xit']]]
+    app = ctk.CTk()
+    app.geometry("1000x600")
+    app.title("Victor")
 
-    # Specify the layout of the Window
-    layout = [
-        [sg.Menu(MENU_DEFINITION)],
-        [sg.Text("Input")],
-        [sg.Multiline(DEFAULT_PROGRAM, key="-INPUT-",
-                      size=(40, 12), expand_x=True, expand_y=True)],
-        [sg.Text("Output")],
-        [sg.Multiline(key="-OUTPUT-", size=(40, 12),
-                      expand_x=True, expand_y=True)],
-        [sg.Button("Roll"), sg.Button("Average")],
-    ]
+    label_input = ctk.CTkLabel(app, text="Input")
+    text_input = ctk.CTkTextbox(app)
+    label_output = ctk.CTkLabel(app, text="Output")
+    text_output = ctk.CTkTextbox(app)
 
-    window = sg.Window("Victor", layout, resizable=True)
-    input_program = DEFAULT_PROGRAM
+    def open_file():
+        global current_file
+        filename = ctk.filedialog.askopenfilename()
 
-    running = True
+        if filename:
+            current_file = Path(filename)
 
-    while running:
-        window_data = cast(None | Tuple[str, Dict[Any, Any]], window.read())
+            with open(current_file, "r", encoding="utf8") as file_handle:
+                text_input.delete("0.0", "end")
+                text_input.insert("0.0", file_handle.read())
 
-        if not isinstance(window_data, tuple):
-            continue
+    def save_file(filename: str | Path | None, select: bool = False):
+        global current_file
+        if not filename or select:
+            filename = ctk.filedialog.asksaveasfilename()
 
-        event, values = window_data
+        if filename:
+            current_file = Path(filename)
+            with open(current_file, "w", encoding="utf8") as file_handle:
+                file_handle.write(text_input.get("0.0", "end"))
 
-        if event in [sg.WIN_CLOSED, 'Exit']:
-            # Exit event by breaking out of loop.
-            running = False
+    menu_bar = tk.Menu(app)
 
-        # Menu command events
-        elif event == 'Open':
-            filename = cast(
-                None | str,
-                sg.popup_get_file("Open Victor file.",
-                                  file_types=(
-                                      ('Victor files', '*.vic'),
-                                      ('All files', '*.* *'),
-                                  ),
-                                  no_window=True,
-                                  history=True))
-            if filename:
-                current_file = Path(filename)
+    file_menu = tk.Menu(menu_bar, tearoff=0)
+    file_menu.add_command(label="Open", underline=0, command=open_file)
+    file_menu.add_command(
+        label="Save", underline=0, command=lambda: save_file(current_file)
+    )
+    file_menu.add_command(
+        label="Save As...",
+        underline=5,
+        command=lambda: save_file(current_file, select=True),
+    )
+    file_menu.add_command(label="Exit", underline=1, command=lambda: app.quit())
+    menu_bar.add_cascade(label="File", menu=file_menu, underline=0)
 
-                with open(current_file, 'r', encoding="utf8") as file_handle:
-                    inp: sg.Multiline = cast(
-                        sg.Multiline, window.Element('-INPUT-'))
-                    inp.Update(file_handle.read())
+    app.config(menu=menu_bar)
 
-            continue
+    app.grid_rowconfigure(1, weight=1)
+    app.grid_columnconfigure(0, weight=1)
+    app.grid_columnconfigure(1, weight=1)
 
-        elif (event == 'Save' and current_file is not None):
-            with open(current_file, 'w', encoding="utf8") as file_handle:
-                file_handle.write(input_program)
+    text_input.insert("0.0", DEFAULT_PROGRAM)
+    text_output.configure(state="disabled")
 
-        elif event == 'Save As...' or (event == 'Save' and current_file is None):
-            filename = cast(None | str, sg.popup_get_file(
-                "Save definition file.", save_as=True, no_window=True))
-            if filename:
-                current_file = Path(filename)
+    def roll_callback(average: bool = False):
+        input_program = text_input.get("0.0", "end")
 
-                with open(current_file, 'w', encoding="utf8") as file_handle:
-                    file_handle.write(input_program)
+        result_data = {}
 
-        elif event in ['Roll', 'Average']:
-            input_program: str = values['-INPUT-']
-            assert isinstance(input_program, str)
-            result_data = {}
+        get_interpreter(
+            input_program,
+            result_data,
+            current_file.parent if current_file is not None else Path(os.getcwd()),
+            average=average,
+        )
 
-            average = event == 'Average'
+        output_string = result2string(result_data)
 
-            get_interpreter(input_program,
-                            result_data,
-                            current_file.parent if current_file is not None else Path(
-                                os.getcwd()),
-                            average=average)
+        text_output.configure(state="normal")
+        text_output.delete("0.0", "end")
+        text_output.insert("0.0", output_string)
+        text_output.configure(state="disabled")
 
-            output = cast(sg.Multiline, window['-OUTPUT-'])
-            output_string = result2string(result_data)
-            output.Update(value=output_string)
-        else:
-            raise NotImplementedError(event)
+    button_roll = ctk.CTkButton(app, text="Roll", command=lambda: roll_callback())
+    button_average = ctk.CTkButton(
+        app, text="Average", command=lambda: roll_callback(True)
+    )
 
-    window.close()
+    label_input.grid(row=0, column=0)
+    label_output.grid(row=0, column=1)
+    text_input.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+    text_output.grid(row=1, column=1, padx=10, pady=10, stick="nsew")
+    button_roll.grid(row=3, column=0, padx=10, pady=10)
+    button_average.grid(row=3, column=1, padx=10, pady=10)
+
+    app.mainloop()
